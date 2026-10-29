@@ -11,6 +11,14 @@ const assets = new Map([
   ['/playground/index.html', 'playground/index.html'],
   ['/playground/app.js', 'playground/app.js'],
   ['/playground/studio.css', 'playground/studio.css'],
+  [
+    '/playground/assets/motion-style-css-logo.png',
+    'playground/assets/motion-style-css-logo.png',
+  ],
+  [
+    '/playground/assets/motion-style-css-icon.png',
+    'playground/assets/motion-style-css-icon.png',
+  ],
   ['/src/index.js', 'src/index.js'],
   ['/src/motion.css', 'src/motion.css'],
 ]);
@@ -18,6 +26,7 @@ const types = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
+  '.png': 'image/png',
 };
 
 /**

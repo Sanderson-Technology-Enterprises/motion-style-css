@@ -7,7 +7,12 @@
       name="description"
       content="Explore Motion Style CSS, the optional STE motion layer with ten paired presets and accessible lifecycle controls."
     />
-    <link rel="icon" href="data:," />
+    <meta name="theme-color" content="#07111f" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="./playground/assets/motion-style-css-icon.png"
+    />
     <title>Motion Style CSS — Studio</title>
     <link rel="stylesheet" href="./src/motion.css" />
     <link rel="stylesheet" href="./playground/studio.css" />
@@ -15,8 +20,15 @@
   <body>
     <header class="topbar">
       <div class="brand">
-        <span class="brand-mark">✳</span
-        ><span>MOTION<span class="brand-light">/STYLE</span></span
+        <img
+          class="brand-icon"
+          src="./playground/assets/motion-style-css-icon.png"
+          alt=""
+          width="44"
+          height="44"
+        />
+        <span class="brand-wordmark"
+          >MOTION<span class="brand-light">STYLE CSS</span></span
         ><span class="version">v1.0.0</span>
       </div>
       <a
@@ -28,12 +40,22 @@
     </header>
     <main class="shell">
       <section class="intro">
-        <div class="eyebrow">DESIGN SYSTEM / MOTION LAB</div>
-        <h1>Every entrance<br /><em>deserves an exit.</em></h1>
-        <p>
-          Ten expressive transition presets. Two independent phases. One tiny,
-          framework-agnostic motion layer.
-        </p>
+        <div class="intro-copy">
+          <div class="eyebrow">DESIGN SYSTEM / MOTION LAB</div>
+          <h1>Every entrance<br /><em>deserves an exit.</em></h1>
+          <p>
+            Ten expressive transition presets. Two independent phases. One tiny,
+            framework-agnostic motion layer.
+          </p>
+        </div>
+        <img
+          class="brand-art"
+          src="./playground/assets/motion-style-css-logo.png"
+          alt="Motion Style CSS"
+          width="1280"
+          height="1280"
+          decoding="async"
+        />
       </section>
       <section class="workspace" aria-label="Motion studio">
         <aside class="controls">
@@ -108,7 +130,13 @@
               </div>
               <div class="mock-body" id="mock-body">
                 <div class="preview-card" id="preview-card">
-                  <div class="card-icon">✳</div>
+                  <img
+                    class="card-icon"
+                    src="./playground/assets/motion-style-css-icon.png"
+                    alt=""
+                    width="40"
+                    height="40"
+                  />
                   <div class="card-kicker">HELLO, MOTION</div>
                   <h2>Make an entrance.</h2>
                   <p>Motion adds character without sacrificing clarity.</p>

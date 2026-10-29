@@ -217,3 +217,41 @@ test('CSS reduced motion preserves component pseudo-elements and iframe realm ev
     );
   });
 });
+
+test('studio uses supplied artwork and the STE Midnight Gold palette', async () => {
+  await withPage(chromium, async (page) => {
+    const branding = await page.evaluate(() => ({
+      background: getComputedStyle(document.documentElement).backgroundColor,
+      accent: getComputedStyle(document.querySelector('h1 em')).color,
+      art: [...document.querySelectorAll('.brand-icon, .brand-art')].map(
+        (image) => ({
+          loaded: image.complete && image.naturalWidth > 0,
+          source: image.getAttribute('src'),
+        }),
+      ),
+      favicon: document.querySelector('link[rel="icon"]').getAttribute('href'),
+    }));
+    assert.equal(branding.background, 'rgb(7, 17, 31)');
+    assert.equal(branding.accent, 'rgb(243, 210, 122)');
+    assert.equal(branding.art.length, 2);
+    assert.ok(branding.art.every((image) => image.loaded));
+    assert.ok(
+      branding.art.some((image) =>
+        image.source.endsWith('motion-style-css-logo.png'),
+      ),
+    );
+    assert.ok(
+      branding.art.some((image) =>
+        image.source.endsWith('motion-style-css-icon.png'),
+      ),
+    );
+    assert.ok(branding.favicon.endsWith('motion-style-css-icon.png'));
+    await page.goto(new URL('/playground/', page.url()).href);
+    assert.equal(
+      await page
+        .locator('.brand-art')
+        .evaluate((image) => image.complete && image.naturalWidth > 0),
+      true,
+    );
+  });
+});
