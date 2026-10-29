@@ -24,14 +24,25 @@ Publication requires a valid user session with permission for `@sanderson-techno
 
 If authentication is deferred, retain the checked candidate and its integrity record. Do not infer npm authentication or scope publishing permission from GitHub organization membership.
 
-After authentication is restored, verify `npm whoami`, recheck the exact package/version on the registry, confirm the local candidate is unchanged, and regenerate docs before any new commit/push. Publish the already-verified tarball:
+Use the supported browser login flow to connect the upload session to an existing npm browser session. Complete passkey/security-key prompts in the browser. Never copy a login token or request an authenticator code in chat.
 
 ```sh
-npm publish .tmp/package-proof/sanderson-technology-enterprises-motion-style-css-1.0.0.tgz --access public
-npm view @sanderson-technology-enterprises/motion-style-css@1.0.0 version dist.integrity dist-tags --json
+npm login --auth-type=web --registry=https://registry.npmjs.org/
+npm whoami
+npm stage publish .tmp/package-proof/sanderson-technology-enterprises-motion-style-css-1.0.0.tgz --access public --tag latest --ignore-scripts --json
 ```
 
-Compare registry integrity with the local proof, then install the registry version into a fresh consumer and repeat its import/CSS/type checks. Publication is immutable; if a published version needs repair, use a new version. Do not unpublish or change spending limits as a retry strategy.
+Before staging, recheck the exact package/version on the registry and confirm the local candidate is unchanged. Regenerate docs before any new commit/push. Staged publishing requires npm CLI 11.15.0 or newer and Node.js 22.14.0 or newer. Staging defers publication authentication to the approval step; see [npm's staged-publishing instructions](https://docs.npmjs.com/staged-publishing/).
+
+Open the signed-in account's **Staged Packages** page on npmjs.com. Verify the exact package name, version, public access, tag, and checksum. Wait for npm's automated review to complete, then approve the staged version and complete the browser's publishing authentication. Do not bypass a review or publish again while an approval is still processing. A new staged package creates npm's public `0.0.0-stage` placeholder before approval.
+
+```sh
+npm view @sanderson-technology-enterprises/motion-style-css@1.0.0 version dist.integrity dist-tags --json --prefer-online
+```
+
+Verify that the requested stable version is tagged `latest`. Compare registry integrity with the local proof, then install the registry version into a fresh consumer and repeat its import/CSS/type checks. Download the registry tarball and compare its bytes with the checked GitHub release artifact. Initial registry responses may lag the website; refresh metadata with a clean cache before treating that as a failed publication.
+
+Publication is immutable; if a published version needs repair, use a new version. Do not unpublish or change spending limits as a retry strategy. See the [verified 1.0.0 release record](releases/1.0.0.md).
 
 ## Consumer rollout
 
