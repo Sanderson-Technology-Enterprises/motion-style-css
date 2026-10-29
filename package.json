@@ -1,0 +1,82 @@
+{
+  "name": "@sanderson-technology-enterprises/motion-style-css",
+  "version": "1.0.0",
+  "description": "Framework-agnostic entrance, exit, and choreography effects for design systems.",
+  "type": "module",
+  "sideEffects": [
+    "./src/motion.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./styles.css": "./src/motion.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "docs/api",
+    "docs/INTEGRATION.md"
+  ],
+  "scripts": {
+    "demo": "node playground/serve.js",
+    "test": "node --test tests/motion.test.js",
+    "test:server": "node --test tests/server.test.js",
+    "test:browser": "node --test --test-concurrency=1 tests/browser.test.js",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc -p tests/types/tsconfig.json",
+    "docs": "node scripts/generate-docs.mjs",
+    "docs:check": "node scripts/generate-docs.mjs --check",
+    "package:check": "node scripts/check-package.mjs",
+    "check:release": "node scripts/check-release.mjs",
+    "check": "npm run lint && npm run format:check && npm run typecheck && npm run docs:check && npm run check:release && npm run package:check",
+    "prepublishOnly": "npm run check",
+    "test:css": "node --test tests/css.test.js"
+  },
+  "engines": {
+    "node": ">=22.14.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "css",
+    "animation",
+    "transition",
+    "design-system",
+    "motion",
+    "accessible"
+  ],
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@eslint/js": "10.0.1",
+    "css-tree": "3.2.1",
+    "eslint": "10.13.0",
+    "globals": "17.13.0",
+    "jsdoc-to-markdown": "9.1.3",
+    "playwright": "1.64.1",
+    "prettier": "3.9.10",
+    "publint": "0.3.25",
+    "typescript": "7.0.2"
+  },
+  "author": "Sanderson Technology Enterprises LLC",
+  "homepage": "https://github.com/Sanderson-Technology-Enterprises/motion-style-css#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sanderson-Technology-Enterprises/motion-style-css.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Sanderson-Technology-Enterprises/motion-style-css/issues"
+  },
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "style": "./src/motion.css",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

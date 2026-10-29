@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Explore Motion Style CSS, the optional STE motion layer with ten paired presets and accessible lifecycle controls."
+    />
+    <link rel="icon" href="data:," />
+    <title>Motion Style CSS — Studio</title>
+    <link rel="stylesheet" href="./src/motion.css" />
+    <link rel="stylesheet" href="./playground/studio.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">✳</span
+        ><span>MOTION<span class="brand-light">/STYLE</span></span
+        ><span class="version">v1.0.0</span>
+      </div>
+      <a
+        href="https://github.com/Sanderson-Technology-Enterprises/motion-style-css"
+        target="_blank"
+        rel="noreferrer"
+        >GitHub ↗</a
+      >
+    </header>
+    <main class="shell">
+      <section class="intro">
+        <div class="eyebrow">DESIGN SYSTEM / MOTION LAB</div>
+        <h1>Every entrance<br /><em>deserves an exit.</em></h1>
+        <p>
+          Ten expressive transition presets. Two independent phases. One tiny,
+          framework-agnostic motion layer.
+        </p>
+      </section>
+      <section class="workspace" aria-label="Motion studio">
+        <aside class="controls">
+          <div class="panel-heading">
+            <span>01 / CONTROL ROOM</span><span class="signal">● LIVE</span>
+          </div>
+          <label for="preset-in">Entrance effect</label
+          ><select id="preset-in"></select>
+          <label for="preset-out">Exit effect</label
+          ><select id="preset-out"></select>
+          <label for="direction">Direction</label
+          ><select id="direction">
+            <option value="left">From left</option>
+            <option value="right">From right</option>
+            <option value="up">From top</option>
+            <option value="down">From bottom</option>
+          </select>
+          <label for="duration"
+            >Duration <output id="duration-label">750ms</output></label
+          ><input
+            id="duration"
+            type="range"
+            min="150"
+            max="1800"
+            step="50"
+            value="750"
+          />
+          <label for="stagger"
+            >Stagger <output id="stagger-label">90ms</output></label
+          ><input
+            id="stagger"
+            type="range"
+            min="0"
+            max="250"
+            step="10"
+            value="90"
+          />
+          <fieldset>
+            <legend>Target</legend>
+            <label class="radio"
+              ><input type="radio" name="target" value="component" checked />
+              Single component</label
+            ><label class="radio"
+              ><input type="radio" name="target" value="group" /> Choreographed
+              group</label
+            ><label class="radio"
+              ><input type="radio" name="target" value="page" /> Entire
+              page</label
+            >
+          </fieldset>
+          <div class="actions">
+            <button id="play" class="primary">▶ Play sequence</button
+            ><button id="in">↘ Load in</button
+            ><button id="out">↖ Load out</button>
+          </div>
+          <p class="hint">
+            Reduced-motion preference is respected automatically. Click Play to
+            see the exit and entrance together.
+          </p>
+        </aside>
+        <section class="preview-panel">
+          <div class="panel-heading">
+            <span>02 / LIVE PREVIEW</span
+            ><span id="status" aria-live="polite">READY</span>
+          </div>
+          <div class="stage" id="stage">
+            <div class="stage-grid"></div>
+            <div class="mock-page" id="mock-page">
+              <div class="mock-top">
+                <span class="dots">● ● ●</span><span>COMPONENT.EXAMPLE</span
+                ><span>↗</span>
+              </div>
+              <div class="mock-body" id="mock-body">
+                <div class="preview-card" id="preview-card">
+                  <div class="card-icon">✳</div>
+                  <div class="card-kicker">HELLO, MOTION</div>
+                  <h2>Make an entrance.</h2>
+                  <p>Motion adds character without sacrificing clarity.</p>
+                  <div class="mini-bar">
+                    <span></span><span></span><span></span>
+                  </div>
+                </div>
+                <div class="preview-group" id="preview-group" hidden>
+                  <div class="tile">
+                    <span>01</span><strong>Structure</strong
+                    ><small>Measured timing</small>
+                  </div>
+                  <div class="tile">
+                    <span>02</span><strong>Movement</strong
+                    ><small>Expressive motion</small>
+                  </div>
+                  <div class="tile">
+                    <span>03</span><strong>Detail</strong
+                    ><small>Clean execution</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="stage-foot">
+              <span>NO DEPENDENCIES</span
+              ><span>60 FPS IS THE GOAL, NOT A GUARANTEE</span>
+            </div>
+          </div>
+          <div class="snippet-header">
+            <span>03 / COPY CONFIGURATION</span
+            ><button id="copy">Copy snippet</button>
+          </div>
+          <pre
+            tabindex="0"
+            role="region"
+            aria-label="Motion configuration"
+          ><code id="snippet"></code></pre>
+        </section>
+      </section>
+      <footer>BUILT FOR EXPERIMENTATION <span>✳</span> SHIP RESPONSIBLY</footer>
+    </main>
+    <script type="module" src="./playground/app.js"></script>
+  </body>
+</html>

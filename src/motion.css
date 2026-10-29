@@ -1,0 +1,492 @@
+/* Motion Style CSS — independent motion layer. No component paint or layout ownership. */
+.ms-motion {
+  --ms-duration: 600ms;
+  --ms-delay: 0ms;
+  --ms-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ms-offset: 58px;
+  --ms-blur: 12px;
+  --ms-rotate: 225deg;
+  --ms-origin: center;
+  animation-duration: var(--ms-duration);
+  animation-delay: var(--ms-delay);
+  animation-timing-function: var(--ms-ease);
+  animation-fill-mode: both;
+  animation-iteration-count: 1;
+  transform-origin: var(--ms-origin);
+  backface-visibility: hidden;
+}
+[data-ms-exited='true'] {
+  visibility: hidden;
+}
+/* Form and dissolve */
+.ms-motion[data-ms-preset='form'][data-ms-phase='in'] {
+  animation-name: ms-form-in;
+}
+.ms-motion[data-ms-preset='form'][data-ms-phase='out'] {
+  animation-name: ms-form-out;
+}
+@keyframes ms-form-in {
+  from {
+    opacity: 0;
+    filter: blur(var(--ms-blur));
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+@keyframes ms-form-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    filter: blur(var(--ms-blur));
+    transform: scale(1.025);
+  }
+}
+/* The direction defaults to left. In is from side -> center; out is center -> side. */
+.ms-motion[data-ms-direction='left'] {
+  --ms-x: calc(-1 * var(--ms-offset));
+  --ms-y: 0px;
+}
+.ms-motion[data-ms-direction='right'] {
+  --ms-x: var(--ms-offset);
+  --ms-y: 0px;
+}
+.ms-motion[data-ms-direction='up'] {
+  --ms-x: 0px;
+  --ms-y: calc(-1 * var(--ms-offset));
+}
+.ms-motion[data-ms-direction='down'] {
+  --ms-x: 0px;
+  --ms-y: var(--ms-offset);
+}
+.ms-motion[data-ms-preset='slide'][data-ms-phase='in'] {
+  animation-name: ms-slide-in;
+}
+.ms-motion[data-ms-preset='slide'][data-ms-phase='out'] {
+  animation-name: ms-slide-out;
+}
+@keyframes ms-slide-in {
+  from {
+    opacity: 0;
+    filter: blur(var(--ms-blur));
+    transform: translate(var(--ms-x, -58px), var(--ms-y, 0px));
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate(0, 0);
+  }
+}
+@keyframes ms-slide-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+    transform: translate(0, 0);
+  }
+  to {
+    opacity: 0;
+    filter: blur(var(--ms-blur));
+    transform: translate(var(--ms-x, -58px), var(--ms-y, 0px));
+  }
+}
+/* Swirl */
+.ms-motion[data-ms-preset='swirl'][data-ms-phase='in'] {
+  animation-name: ms-swirl-in;
+}
+.ms-motion[data-ms-preset='swirl'][data-ms-phase='out'] {
+  animation-name: ms-swirl-out;
+}
+@keyframes ms-swirl-in {
+  from {
+    opacity: 0;
+    filter: blur(16px);
+    transform: rotate(calc(-1 * var(--ms-rotate))) scale(0.15);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: rotate(0) scale(1);
+  }
+}
+@keyframes ms-swirl-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+    transform: rotate(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    filter: blur(16px);
+    transform: rotate(var(--ms-rotate)) scale(0.12);
+  }
+}
+/* Slam / boom uses pseudo-element radial-burst decorative accents. */
+.ms-motion[data-ms-preset='slam'][data-ms-phase='in'] {
+  animation-name: ms-slam-in;
+  --ms-ease: cubic-bezier(0.18, 0.9, 0.27, 1);
+}
+.ms-motion[data-ms-preset='slam'][data-ms-phase='out'] {
+  animation-name: ms-boom-out;
+}
+@keyframes ms-slam-in {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.92);
+  }
+  35% {
+    opacity: 1;
+    transform: translateY(-28px) scale(1.025);
+  }
+  68% {
+    transform: translateY(8px) scale(1.06, 0.9);
+  }
+  83% {
+    transform: translateY(-4px) scale(0.98, 1.025);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+@keyframes ms-boom-out {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  22% {
+    opacity: 1;
+    transform: scale(0.86);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.26);
+  }
+  100% {
+    opacity: 0;
+    filter: blur(13px);
+    transform: scale(1.6);
+  }
+}
+/* An optional decorative burst drawn with pure CSS during the boom exit.
+   Pseudo-elements may conflict with component-owned pseudo-elements; wrap in a motion shell if needed. */
+.ms-motion[data-ms-preset='slam'][data-ms-phase='out'][data-ms-burst='true'] {
+  position: relative;
+}
+.ms-motion[data-ms-preset='slam'][data-ms-phase='out'][data-ms-burst='true']::after {
+  content: '';
+  position: absolute;
+  inset: -30%;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    radial-gradient(circle, #f8ffab 0 3px, transparent 4px) 8% 17%/24% 24%
+      no-repeat,
+    radial-gradient(circle, #e5a2ff 0 3px, transparent 4px) 88% 11%/23% 29%
+      no-repeat,
+    radial-gradient(circle, #b0f881 0 4px, transparent 5px) 13% 85%/25% 27%
+      no-repeat,
+    radial-gradient(circle, #ffe3a6 0 3px, transparent 4px) 87% 82%/25% 27%
+      no-repeat,
+    radial-gradient(circle, #aaeeff 0 3px, transparent 4px) 52% 0%/25% 25%
+      no-repeat;
+  animation: ms-boom-sparks var(--ms-duration) var(--ms-ease) var(--ms-delay)
+    both;
+}
+@keyframes ms-boom-sparks {
+  0%,
+  25% {
+    opacity: 0;
+    transform: scale(0.25) rotate(-8deg);
+  }
+  48% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.7) rotate(32deg);
+  }
+}
+/* Origami */
+.ms-motion[data-ms-preset='origami'][data-ms-phase='in'] {
+  animation-name: ms-origami-in;
+  transform-origin: top center;
+}
+.ms-motion[data-ms-preset='origami'][data-ms-phase='out'] {
+  animation-name: ms-origami-out;
+  transform-origin: top center;
+}
+@keyframes ms-origami-in {
+  from {
+    opacity: 0;
+    transform: perspective(900px) rotateX(-86deg) scaleY(0.3);
+  }
+  70% {
+    opacity: 1;
+    transform: perspective(900px) rotateX(12deg) scaleY(1);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(900px) rotateX(0) scaleY(1);
+  }
+}
+@keyframes ms-origami-out {
+  from {
+    opacity: 1;
+    transform: perspective(900px) rotateX(0) scaleY(1);
+  }
+  to {
+    opacity: 0;
+    transform: perspective(900px) rotateX(-86deg) scaleY(0.3);
+  }
+}
+/* Portal */
+.ms-motion[data-ms-preset='portal'][data-ms-phase='in'] {
+  animation-name: ms-portal-in;
+}
+.ms-motion[data-ms-preset='portal'][data-ms-phase='out'] {
+  animation-name: ms-portal-out;
+}
+@keyframes ms-portal-in {
+  from {
+    opacity: 0;
+    filter: blur(20px) brightness(2.5);
+    transform: scale(0.04);
+  }
+  65% {
+    opacity: 1;
+    filter: blur(4px) brightness(1.35);
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0) brightness(1);
+    transform: scale(1);
+  }
+}
+@keyframes ms-portal-out {
+  from {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    filter: blur(20px);
+    transform: scale(0.02);
+  }
+}
+/* Curtain: clip-path means no element translation. */
+.ms-motion[data-ms-preset='curtain'][data-ms-phase='in'] {
+  animation-name: ms-curtain-in-left;
+}
+.ms-motion[data-ms-preset='curtain'][data-ms-phase='out'] {
+  animation-name: ms-curtain-out-left;
+}
+@keyframes ms-curtain-in-left {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes ms-curtain-out-left {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+.ms-motion[data-ms-preset='curtain'][data-ms-direction='right'][data-ms-phase='in'] {
+  animation-name: ms-curtain-in-right;
+}
+.ms-motion[data-ms-preset='curtain'][data-ms-direction='right'][data-ms-phase='out'] {
+  animation-name: ms-curtain-out-right;
+}
+@keyframes ms-curtain-in-right {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes ms-curtain-out-right {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+.ms-motion[data-ms-preset='curtain'][data-ms-direction='up'][data-ms-phase='in'] {
+  animation-name: ms-curtain-in-up;
+}
+.ms-motion[data-ms-preset='curtain'][data-ms-direction='up'][data-ms-phase='out'] {
+  animation-name: ms-curtain-out-up;
+}
+@keyframes ms-curtain-in-up {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes ms-curtain-out-up {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+.ms-motion[data-ms-preset='curtain'][data-ms-direction='down'][data-ms-phase='in'] {
+  animation-name: ms-curtain-in-down;
+}
+.ms-motion[data-ms-preset='curtain'][data-ms-direction='down'][data-ms-phase='out'] {
+  animation-name: ms-curtain-out-down;
+}
+@keyframes ms-curtain-in-down {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes ms-curtain-out-down {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 100% 0);
+  }
+}
+/* Elastic */
+.ms-motion[data-ms-preset='elastic'][data-ms-phase='in'] {
+  animation-name: ms-elastic-in;
+}
+.ms-motion[data-ms-preset='elastic'][data-ms-phase='out'] {
+  animation-name: ms-elastic-out;
+}
+@keyframes ms-elastic-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.15);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  75% {
+    transform: scale(0.94);
+  }
+  90% {
+    transform: scale(1.025);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes ms-elastic-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  28% {
+    transform: scale(1.09);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+/* Cascade: apply to child elements with stagger(), not a parent transform. */
+.ms-motion[data-ms-preset='cascade'][data-ms-phase='in'] {
+  animation-name: ms-cascade-in;
+}
+.ms-motion[data-ms-preset='cascade'][data-ms-phase='out'] {
+  animation-name: ms-cascade-out;
+}
+@keyframes ms-cascade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 34px, 0) scale(0.95);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+    filter: blur(0);
+  }
+}
+@keyframes ms-cascade-out {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(34px, -50px, 0) rotate(12deg) scale(0.8);
+  }
+}
+/* Flip deck */
+.ms-motion[data-ms-preset='flip'][data-ms-phase='in'] {
+  animation-name: ms-flip-in;
+}
+.ms-motion[data-ms-preset='flip'][data-ms-phase='out'] {
+  animation-name: ms-flip-out;
+}
+@keyframes ms-flip-in {
+  from {
+    opacity: 0;
+    transform: perspective(900px) rotateY(-95deg) translateY(-35px) scale(0.8);
+  }
+  80% {
+    opacity: 1;
+    transform: perspective(900px) rotateY(8deg) translateY(0) scale(1);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(900px) rotateY(0) translateY(0) scale(1);
+  }
+}
+@keyframes ms-flip-out {
+  from {
+    opacity: 1;
+    transform: perspective(900px) rotateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: perspective(900px) rotateY(95deg) translateY(40px) scale(0.8);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ms-motion[data-ms-preset='slam'][data-ms-phase='out'][data-ms-burst='true']::after {
+    animation: none !important;
+    content: none !important;
+  }
+  .ms-motion {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    filter: none !important;
+    clip-path: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
