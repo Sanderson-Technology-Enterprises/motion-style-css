@@ -13,3 +13,5 @@ jobs:
     steps:
       - name: Runner policy check
         run: echo "GitHub-hosted runner started successfully"
+
+# second push verifies workflow registration
