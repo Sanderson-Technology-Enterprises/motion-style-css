@@ -7,11 +7,12 @@ workflows:
         - 'actions/checkout@v4.4.0'
         - 'actions/setup-node@v4.4.0'
     '.github/workflows/generate-actions-lock.yml': []
-    '.github/workflows/pages.yml':
+    '.github/workflows/pages-actions.yml':
         - 'actions/checkout@v4.4.0'
         - 'actions/configure-pages@v5.0.0'
         - 'actions/deploy-pages@v4.0.5'
         - 'actions/upload-pages-artifact@v4.0.0'
+    '.github/workflows/pages.yml': []
     '.github/workflows/release.yml': []
 dependencies:
     'actions/checkout@v4.4.0':
