@@ -24,53 +24,53 @@ permissions:
   id-token: write
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.4.0
-      - name: Setup Node
-        uses: actions/setup-node@v4.4.0
-        with:
-          node-version: "22"
-          cache: npm
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
-      - name: Static and package validation
-        run: npm run check
-      - name: Server tests
-        run: npm run test:server
-      - name: CSS tests
-        run: npm run test:css
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps chromium firefox webkit
-      - name: Browser tests
-        run: npm run test:browser
-
-  publish-npm:
-    needs: validate
+  validate-and-publish:
     if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.publish_npm == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4.4.0
-      - name: Setup Node
-        uses: actions/setup-node@v4.4.0
-        with:
-          node-version: "22"
-          cache: npm
-      - name: Install dependencies
-        run: npm ci --ignore-scripts
-      - name: Use npm with trusted-publishing support
-        run: npm install --global npm@11.15.0
-      - name: Configure npm token fallback when available
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Clone repository
         run: |
-          if [ -n "$NPM_TOKEN" ]; then
-            npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
-          fi
-      - name: Refuse to republish an existing immutable version
+          git clone --depth 1 --branch main "https://github.com/${GITHUB_REPOSITORY}.git" repo
+
+      - name: Install Node.js 22.14.0 without external actions
+        run: |
+          curl -fsSLo node.tar.xz https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz
+          mkdir -p "${RUNNER_TEMP}/node22"
+          tar -xJf node.tar.xz -C "${RUNNER_TEMP}/node22" --strip-components=1
+          echo "${RUNNER_TEMP}/node22/bin" >> "${GITHUB_PATH}"
+
+      - name: Verify runtime
+        run: |
+          node --version
+          npm --version
+
+      - name: Install dependencies
+        working-directory: repo
+        run: npm ci --ignore-scripts
+
+      - name: Validate static package contracts
+        working-directory: repo
+        run: npm run check
+
+      - name: Run server and CSS tests
+        working-directory: repo
+        run: |
+          npm run test:server
+          npm run test:css
+
+      - name: Install Playwright browsers
+        working-directory: repo
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Run browser validation
+        working-directory: repo
+        run: npm run test:browser
+
+      - name: Install npm trusted-publishing client
+        run: npm install --global npm@11.15.0
+
+      - name: Refuse to republish an immutable version
+        working-directory: repo
         run: |
           VERSION="$(node -p "require('./package.json').version")"
           NAME="$(node -p "require('./package.json').name")"
@@ -78,7 +78,7 @@ jobs:
             echo "$NAME@$VERSION is already published; refusing to republish."
             exit 1
           fi
-      - name: Publish to npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish to npm with OIDC provenance
+        working-directory: repo
         run: npm publish --access public --provenance --tag latest
