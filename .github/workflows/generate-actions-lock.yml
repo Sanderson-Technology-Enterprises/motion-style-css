@@ -1,6 +1,11 @@
 name: Verify Actions dependency lockfile
 
 on:
+  push:
+    branches:
+      - Demo-deployment-patch
+    paths:
+      - '.github/workflows/**'
   workflow_dispatch:
 
 permissions:
@@ -12,11 +17,9 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Clone repository without external actions
+      - name: Clone PR branch without external actions
         run: |
-          git clone "https://github.com/${GITHUB_REPOSITORY}.git" repo
-          cd repo
-          git checkout main
+          git clone --branch Demo-deployment-patch "https://github.com/${GITHUB_REPOSITORY}.git" repo
       - name: Install official actions-lock extension
         run: gh extension install github/gh-actions-lock
       - name: Verify generated lockfile has no drift
@@ -24,3 +27,8 @@ jobs:
           cd repo
           gh actions-lock
           git diff --exit-code -- .github/workflows
+      - name: Run repository release gate
+        run: |
+          cd repo
+          npm ci --ignore-scripts
+          npm run check
