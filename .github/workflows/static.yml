@@ -1,5 +1,5 @@
 # Static GitHub Pages deployment for the Motion Style CSS demo.
-# No Jekyll or build step is required.
+# No Jekyll, build framework, or external GitHub Action is required.
 name: Deploy Motion Studio to GitHub Pages
 
 on:
@@ -27,27 +27,171 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4.4.0
-
-      - name: Configure Pages
-        uses: actions/configure-pages@v5.0.0
-
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v4.0.0
-        with:
-          path: .
-
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://sanderson-technology-enterprises.github.io/motion-style-css/
     runs-on: ubuntu-latest
-    needs: build
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Deploy to GitHub Pages
+      - name: Clone current main
+        run: |
+          git clone --depth 1 --branch main "https://github.com/${GITHUB_REPOSITORY}.git" site
+
+      - name: Prepare GitHub Pages artifact
+        run: |
+          tar \
+            --dereference \
+            --hard-dereference \
+            --directory site \
+            -cvf "${RUNNER_TEMP}/artifact.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            --exclude=".[^/]*" \
+            .
+
+      - name: Upload Pages artifact
+        run: |
+          mkdir -p "${RUNNER_TEMP}/pages-uploader"
+          cd "${RUNNER_TEMP}/pages-uploader"
+          npm init -y >/dev/null 2>&1
+          npm install --no-audit --no-fund @actions/artifact@2.3.2 >/dev/null
+
+          cat > upload.cjs <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          const artifact = require('@actions/artifact');
+
+          (async () => {
+            const tarPath = path.join(process.env.RUNNER_TEMP, 'artifact.tar');
+            const result = await artifact.uploadArtifact(
+              'github-pages',
+              [tarPath],
+              process.env.RUNNER_TEMP,
+              { retentionDays: 1 }
+            );
+
+            if (!result?.id) {
+              throw new Error('Artifact upload returned no artifact ID.');
+            }
+
+            fs.appendFileSync(
+              process.env.GITHUB_ENV,
+              `PAGES_ARTIFACT_ID=${result.id}\n`
+            );
+            console.log(`Uploaded github-pages artifact ID ${result.id}`);
+          })().catch((error) => {
+            console.error(error);
+            process.exit(1);
+          });
+          NODE
+
+          node upload.cjs
+
+      - name: Request GitHub OIDC token
+        run: |
+          oidc_json="$(curl -fsSL \
+            -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" \
+            "${ACTIONS_ID_TOKEN_REQUEST_URL}")"
+
+          oidc_token="$(printf '%s' "${oidc_json}" | python3 -c "import json,sys; print(json.load(sys.stdin)['value'])")"
+          if [ -z "${oidc_token}" ]; then
+            echo "OIDC token was empty."
+            exit 1
+          fi
+
+          printf '%s' "${oidc_token}" > "${RUNNER_TEMP}/pages-oidc-token"
+
+      - name: Create Pages deployment
         id: deployment
-        uses: actions/deploy-pages@v4.0.5
+        run: |
+          oidc_token="$(cat "${RUNNER_TEMP}/pages-oidc-token")"
+
+          python3 - <<'PY'
+          import json, os
+          payload = {
+              "artifact_id": int(os.environ["PAGES_ARTIFACT_ID"]),
+              "pages_build_version": os.environ["GITHUB_SHA"],
+              "oidc_token": open(os.path.join(os.environ["RUNNER_TEMP"], "pages-oidc-token")).read(),
+              "environment": "github-pages",
+          }
+          with open("/tmp/pages-deploy.json", "w") as f:
+              json.dump(payload, f)
+          PY
+
+          http_status="$(curl -sS -o /tmp/pages-response.json -w '%{http_code}' \
+            -X POST \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2026-03-10" \
+            -H "Content-Type: application/json" \
+            --data-binary @/tmp/pages-deploy.json \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/deployments")"
+
+          cat /tmp/pages-response.json
+          echo
+
+          if [ "${http_status}" != "200" ]; then
+            echo "Pages deployment creation failed with HTTP ${http_status}."
+            exit 1
+          fi
+
+          deployment_id="$(python3 -c "import json; d=json.load(open('/tmp/pages-response.json')); print(d.get('id') or d.get('status_url','').rstrip('/').split('/')[-1])")"
+          page_url="$(python3 -c "import json; d=json.load(open('/tmp/pages-response.json')); print(d.get('page_url',''))")"
+
+          if [ -z "${deployment_id}" ]; then
+            echo "Pages deployment response did not contain a deployment ID."
+            exit 1
+          fi
+
+          echo "deployment_id=${deployment_id}" >> "${GITHUB_OUTPUT}"
+          echo "page_url=${page_url}" >> "${GITHUB_OUTPUT}"
+
+      - name: Wait for Pages deployment
+        run: |
+          deployment_id="${{ steps.deployment.outputs.deployment_id }}"
+
+          for attempt in $(seq 1 120); do
+            curl -fsSL \
+              -H "Authorization: Bearer ${GH_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2026-03-10" \
+              "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/deployments/${deployment_id}" \
+              > /tmp/pages-status.json
+
+            status="$(python3 -c "import json; print(json.load(open('/tmp/pages-status.json')).get('status','unknown'))")"
+            echo "Pages deployment status: ${status}"
+
+            if [ "${status}" = "succeed" ]; then
+              exit 0
+            fi
+
+            case "${status}" in
+              deployment_failed|deployment_perms_error|deployment_content_failed|deployment_cancelled|deployment_lost)
+                cat /tmp/pages-status.json
+                exit 1
+                ;;
+            esac
+
+            sleep 5
+          done
+
+          echo "Pages deployment did not complete within 10 minutes."
+          cat /tmp/pages-status.json
+          exit 1
+
+      - name: Verify public Motion Studio
+        run: |
+          for attempt in $(seq 1 36); do
+            page="$(curl -fsSL "https://sanderson-technology-enterprises.github.io/motion-style-css/?verify=${GITHUB_SHA}-${attempt}")"
+            if printf '%s' "${page}" | grep -q 'v1.1.0' &&
+              printf '%s' "${page}" | grep -qi 'seventeen'; then
+              echo "Public Motion Studio is serving v1.1.0."
+              exit 0
+            fi
+            sleep 5
+          done
+
+          echo "Pages deployment succeeded, but public verification did not observe v1.1.0."
+          exit 1
