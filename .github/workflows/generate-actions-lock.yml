@@ -38,3 +38,5 @@ jobs:
           echo "-----BEGIN ACTIONS WORKFLOW DIFF-----"
           git diff -- .github/workflows
           echo "-----END ACTIONS WORKFLOW DIFF-----"
+
+# regenerate after SHA pinning and shell-only release workflow
