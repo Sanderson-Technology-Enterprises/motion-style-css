@@ -1,0 +1,57 @@
+name: Repair repository formatting
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/format-repair.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Clone repository
+        run: |
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" repo
+          cd repo
+          git checkout main
+      - name: Install Node.js 22.14.0
+        run: |
+          curl -fsSLo node.tar.xz https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz
+          mkdir -p "${RUNNER_TEMP}/node22"
+          tar -xJf node.tar.xz -C "${RUNNER_TEMP}/node22" --strip-components=1
+          echo "${RUNNER_TEMP}/node22/bin" >> "${GITHUB_PATH}"
+      - name: Install dependencies and format
+        run: |
+          cd repo
+          npm ci --ignore-scripts
+          npm run format
+          cp .github/workflows/generate-actions-lock.yml /tmp/generate-actions-lock.yml
+          cp .github/workflows/pages.yml /tmp/pages.yml
+          cp .github/workflows/release.yml /tmp/release.yml
+          git restore .github/workflows
+      - name: Commit formatted non-workflow files
+        run: |
+          cd repo
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m "style: apply repository formatting"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Print formatted workflow files
+        run: |
+          for file in generate-actions-lock.yml pages.yml release.yml; do
+            echo "-----BEGIN ${file}-----"
+            base64 -w0 "/tmp/${file}"
+            echo
+            echo "-----END ${file}-----"
+          done
