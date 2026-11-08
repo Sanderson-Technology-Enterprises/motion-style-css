@@ -1,4 +1,4 @@
-name: Inspect Pages workflow startup failure
+name: Verify Actions dependency lockfile
 
 on:
   push:
@@ -6,43 +6,29 @@ on:
       - main
     paths:
       - '.github/workflows/generate-actions-lock.yml'
+  workflow_dispatch:
 
 permissions:
-  checks: read
   contents: read
 
 jobs:
-  inspect:
+  lock:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Read failed check run details
+      - name: Clone current main
         run: |
-          curl -fsSL \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/check-suites/115190579609/check-runs" \
-            > /tmp/check-runs.json
-          cat /tmp/check-runs.json
-          echo
-          python3 - <<'PY'
-          import json
-          data=json.load(open('/tmp/check-runs.json'))
-          for run in data.get('check_runs', []):
-              print('CHECK_RUN_ID='+str(run.get('id')))
-              print('NAME='+str(run.get('name')))
-              print('CONCLUSION='+str(run.get('conclusion')))
-              print('OUTPUT='+json.dumps(run.get('output')))
-          PY
-
-          for id in $(python3 -c "import json; print(' '.join(str(x['id']) for x in json.load(open('/tmp/check-runs.json')).get('check_runs', [])))"); do
-            echo "----- annotations for ${id} -----"
-            curl -fsSL \
-              -H "Authorization: Bearer ${GH_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              "https://api.github.com/repos/${GITHUB_REPOSITORY}/check-runs/${id}/annotations"
-            echo
-          done
+          git clone --depth 1 --branch main "https://github.com/${GITHUB_REPOSITORY}.git" repo
+      - name: Install official actions-lock extension
+        run: gh extension install github/gh-actions-lock
+      - name: Verify Actions lockfile has no drift
+        run: |
+          cd repo
+          gh actions-lock
+          git diff --exit-code -- .github/workflows
+      - name: Run final repository release gate
+        run: |
+          cd repo
+          npm ci --ignore-scripts
+          npm run check
