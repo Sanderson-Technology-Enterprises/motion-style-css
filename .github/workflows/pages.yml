@@ -1,39 +1,39 @@
-name: Migrate demo to GitHub Actions Pages
+name: Deploy demo to GitHub Pages
 
 on:
   push:
     branches:
       - main
     paths:
+      - 'index.html'
+      - 'playground/**'
+      - 'src/**'
       - '.github/workflows/pages.yml'
+      - '.github/workflows/actions.lock'
+  release:
+    types:
+      - published
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
 
 jobs:
-  migrate:
+  preflight:
     runs-on: ubuntu-latest
+    outputs:
+      build_type: ${{ steps.pages.outputs.build_type }}
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Switch Pages build type to workflow
-        run: |
-          status="$(curl -sS -o /tmp/pages-update.json -w '%{http_code}' \
-            -X PUT \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            -H "Content-Type: application/json" \
-            -d '{"build_type":"workflow"}' \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages")"
-          cat /tmp/pages-update.json || true
-          echo
-          if [ "${status}" != "204" ] && [ "${status}" != "200" ]; then
-            echo "Pages migration failed with HTTP ${status}"
-            exit 1
-          fi
-      - name: Verify Pages uses workflow builds
+      - name: Read Pages configuration
+        id: pages
         run: |
           curl -fsSL \
             -H "Authorization: Bearer ${GH_TOKEN}" \
@@ -41,11 +41,39 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
             > /tmp/pages.json
-          cat /tmp/pages.json
-          python3 - <<'PY'
-          import json
-          with open('/tmp/pages.json') as handle:
-              pages = json.load(handle)
-          if pages.get('build_type') != 'workflow':
-              raise SystemExit('Pages build_type is not workflow')
-          PY
+
+          build_type="$(python3 -c "import json; print(json.load(open('/tmp/pages.json')).get('build_type', 'unknown'))")"
+          echo "build_type=${build_type}" >> "${GITHUB_OUTPUT}"
+          echo "GitHub Pages build type: ${build_type}"
+
+          if [ "${build_type}" != "workflow" ]; then
+            echo "::warning title=Pages source is still legacy::Open Settings > Pages and change Source to GitHub Actions. This workflow will deploy automatically once build_type is workflow."
+          fi
+
+  build:
+    needs: preflight
+    if: ${{ needs.preflight.outputs.build_type == 'workflow' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.4.0
+      - name: Configure Pages
+        uses: actions/configure-pages@v5.0.0
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4.0.0
+        with:
+          path: .
+
+  deploy:
+    needs:
+      - preflight
+      - build
+    if: ${{ needs.preflight.outputs.build_type == 'workflow' }}
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4.0.5
