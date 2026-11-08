@@ -101,8 +101,8 @@ const recipes = [
     target: 'component',
   },
   {
-    id: 'signal-lock',
-    name: 'Signal Lock',
+    id: 'glitch-signal-lost',
+    name: 'Glitch / Signal Lost',
     note: 'Assemble from fixed glitch fragments, lose signal on exit.',
     presetIn: 'glitch',
     presetOut: 'glitch',
