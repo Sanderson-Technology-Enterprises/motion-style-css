@@ -74,10 +74,11 @@ function animationEvent(
   const preset = target.getAttribute('data-ms-preset');
   const phase = target.getAttribute('data-ms-phase');
   const direction = target.getAttribute('data-ms-direction');
+  const directional = preset === 'curtain' || preset === 'scanline';
   const expected =
     preset === 'slam' && phase === 'out'
       ? 'ms-boom-out'
-      : `ms-${preset}-${phase}${preset === 'curtain' ? `-${direction}` : ''}`;
+      : `ms-${preset}-${phase}${directional ? `-${direction}` : ''}`;
   const event = new Event(type);
   Object.assign(event, { animationName: name ?? expected, pseudoElement });
   return target.dispatchEvent(event);
@@ -100,9 +101,19 @@ test('ignores unrelated and pseudo-element animation events', async () => {
   }
 });
 
-test('exports ten distinct presets', () => {
-  assert.equal(presets.length, 10);
-  assert.equal(new Set(presets).size, 10);
+test('exports seventeen distinct presets', () => {
+  assert.equal(presets.length, 17);
+  assert.equal(new Set(presets).size, 17);
+  for (const preset of [
+    'scanline',
+    'blueprint',
+    'hinge',
+    'gravity',
+    'pixelate',
+    'glitch',
+    'transmission',
+  ])
+    assert.ok(presets.includes(preset));
 });
 test('rejects invalid options', () => {
   assert.throws(() => animate(el(), { preset: 'unknown' }), RangeError);
