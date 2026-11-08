@@ -1,0 +1,15 @@
+name: Actions policy smoke test
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/actions-smoke.yml"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runner policy check
+        run: echo "GitHub-hosted runner started successfully"
