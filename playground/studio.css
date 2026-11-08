@@ -459,6 +459,62 @@ footer {
 footer span {
   color: var(--demo-gold-light);
 }
+
+.recipe-lab {
+  margin: 22px 0 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--demo-border);
+}
+.recipe-heading {
+  color: var(--demo-gold-light);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.recipe-lab > p {
+  margin: 8px 0 12px;
+  color: var(--demo-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.recipe-grid {
+  display: grid;
+  gap: 7px;
+}
+.recipe-button {
+  width: 100%;
+  min-height: 52px;
+  display: grid;
+  gap: 3px;
+  text-align: left;
+  padding: 9px 10px;
+  border: 1px solid var(--demo-border);
+  border-radius: 7px;
+  background: var(--demo-surface-soft);
+  color: var(--demo-text);
+}
+.recipe-button strong {
+  font-size: 11px;
+  color: var(--demo-silver);
+}
+.recipe-button span {
+  color: var(--demo-muted);
+  font-size: 9px;
+  line-height: 1.35;
+}
+.recipe-button:hover:not(:disabled),
+.recipe-button[aria-pressed='true'] {
+  border-color: var(--demo-gold);
+  background: var(--demo-surface-strong);
+}
+.recipe-button[aria-pressed='true'] strong {
+  color: var(--demo-gold-light);
+}
+.recipe-button:focus-visible {
+  outline: 2px solid var(--demo-gold-light);
+  outline-offset: 2px;
+}
+
 @media (max-width: 780px) {
   .workspace {
     grid-template-columns: 1fr;
