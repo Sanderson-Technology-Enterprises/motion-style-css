@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="Explore Motion Style CSS, the optional STE motion layer with ten paired presets and accessible lifecycle controls."
+      content="Explore Motion Style CSS, the optional STE motion layer with seventeen paired presets and accessible lifecycle controls."
     />
     <meta name="theme-color" content="#07111f" />
     <link
@@ -29,7 +29,7 @@
         />
         <span class="brand-wordmark"
           >MOTION<span class="brand-light">STYLE CSS</span></span
-        ><span class="version">v1.0.0</span>
+        ><span class="version">v1.1.0</span>
       </div>
       <a
         href="https://github.com/Sanderson-Technology-Enterprises/motion-style-css"
@@ -44,7 +44,7 @@
           <div class="eyebrow">DESIGN SYSTEM / MOTION LAB</div>
           <h1>Every entrance<br /><em>deserves an exit.</em></h1>
           <p>
-            Ten expressive transition presets. Two independent phases. One tiny,
+            Seventeen expressive transition presets. Two independent phases. One tiny,
             framework-agnostic motion layer.
           </p>
         </div>
@@ -93,6 +93,48 @@
             step="10"
             value="90"
           />
+          <label for="offset"
+            >Distance <output id="offset-label">58px</output></label
+          ><input
+            id="offset"
+            type="range"
+            min="16"
+            max="140"
+            step="2"
+            value="58"
+          />
+          <label for="blur"
+            >Blur <output id="blur-label">12px</output></label
+          ><input
+            id="blur"
+            type="range"
+            min="0"
+            max="24"
+            step="1"
+            value="12"
+          />
+          <label for="rotate"
+            >Rotation <output id="rotate-label">225°</output></label
+          ><input
+            id="rotate"
+            type="range"
+            min="0"
+            max="360"
+            step="5"
+            value="225"
+          />
+          <label for="origin">Transform origin</label
+          ><select id="origin">
+            <option value="center">Center</option>
+            <option value="top left">Top left</option>
+            <option value="top center">Top</option>
+            <option value="top right">Top right</option>
+            <option value="center left">Left</option>
+            <option value="center right">Right</option>
+            <option value="bottom left">Bottom left</option>
+            <option value="bottom center">Bottom</option>
+            <option value="bottom right">Bottom right</option>
+          </select>
           <fieldset>
             <legend>Target</legend>
             <label class="radio"
@@ -106,6 +148,11 @@
               page</label
             >
           </fieldset>
+          <div class="recipe-lab">
+            <div class="recipe-heading">02 / STARTER RECIPES</div>
+            <p>Load a tuned baseline, preview it, then adjust the same controls.</p>
+            <div id="recipes" class="recipe-grid" aria-label="Starter motion recipes"></div>
+          </div>
           <div class="actions">
             <button id="play" class="primary">▶ Play sequence</button
             ><button id="in">↘ Load in</button
@@ -118,7 +165,7 @@
         </aside>
         <section class="preview-panel">
           <div class="panel-heading">
-            <span>02 / LIVE PREVIEW</span
+            <span>03 / LIVE PREVIEW</span
             ><span id="status" aria-live="polite">READY</span>
           </div>
           <div class="stage" id="stage">
@@ -166,7 +213,7 @@
             </div>
           </div>
           <div class="snippet-header">
-            <span>03 / COPY CONFIGURATION</span
+            <span>04 / COPY CONFIGURATION</span
             ><button id="copy">Copy snippet</button>
           </div>
           <pre

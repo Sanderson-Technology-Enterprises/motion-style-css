@@ -10,7 +10,14 @@ export type Preset =
   | 'curtain'
   | 'elastic'
   | 'cascade'
-  | 'flip';
+  | 'flip'
+  | 'scanline'
+  | 'blueprint'
+  | 'hinge'
+  | 'gravity'
+  | 'pixelate'
+  | 'glitch'
+  | 'transmission';
 export type Direction = 'left' | 'right' | 'up' | 'down';
 export type Phase = 'in' | 'out';
 export type MotionResult = { status: 'finished' | 'cancelled' | 'skipped' };

@@ -38,10 +38,18 @@ test('playground initializes, switches targets, and stays accessible at narrow w
     page.on('pageerror', (error) => errors.push(error.message));
     await page.reload();
     await page.waitForFunction(
-      () => document.querySelector('#preset-in')?.options.length === 10,
+      () => document.querySelector('#preset-in')?.options.length === 17,
       undefined,
       { timeout: 3000 },
     );
+    await page.getByRole('button', { name: /Blueprint Draft/ }).click();
+    await page.waitForFunction(
+      () => document.querySelector('#status').textContent === 'COMPLETE',
+    );
+    assert.equal(await page.locator('#preset-in').inputValue(), 'blueprint');
+    assert.equal(await page.locator('#preset-out').inputValue(), 'blueprint');
+    assert.equal(await page.locator('#duration').inputValue(), '1100');
+    assert.equal(await page.locator('#origin').inputValue(), 'top left');
     await page.getByRole('radio', { name: 'Choreographed group' }).check();
     await page.getByRole('button', { name: 'Play sequence' }).click();
     await page.waitForFunction(
@@ -104,7 +112,9 @@ for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
         document.body.append(node);
         const problems = [];
         for (const preset of presets) {
-          for (const direction of ['slide', 'curtain'].includes(preset)
+          for (const direction of ['slide', 'curtain', 'scanline'].includes(
+            preset,
+          )
             ? ['left', 'right', 'up', 'down']
             : ['left']) {
             for (const [phase, action] of [

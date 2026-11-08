@@ -33,7 +33,7 @@ async function checkRelease() {
       const name =
         preset === 'slam' && phase === 'out'
           ? 'ms-boom-out'
-          : `ms-${preset}-${phase}${preset === 'curtain' ? '-left' : ''}`;
+          : `ms-${preset}-${phase}${['curtain', 'scanline'].includes(preset) ? '-left' : ''}`;
       assert.ok(
         css.includes(`@keyframes ${name} `),
         `Missing keyframes: ${name}`,

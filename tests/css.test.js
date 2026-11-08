@@ -17,3 +17,31 @@ test('decorative pseudo-element ownership is explicitly opt-in, including reduce
   for (const selector of selectors)
     assert.match(selector, /\[data-ms-burst=(?:"true"|true)\]/);
 });
+
+
+test('expanded preset families and blueprint erasure remain in the stylesheet contract', async () => {
+  const css = await readFile('src/motion.css', 'utf8');
+  for (const name of [
+    'ms-scanline-in-left',
+    'ms-blueprint-in',
+    'ms-blueprint-out',
+    'ms-hinge-in',
+    'ms-hinge-out',
+    'ms-gravity-in',
+    'ms-gravity-out',
+    'ms-pixelate-in',
+    'ms-pixelate-out',
+    'ms-glitch-in',
+    'ms-glitch-out',
+    'ms-transmission-in',
+    'ms-transmission-out',
+  ])
+    assert.ok(css.includes(`@keyframes ${name}`), name);
+  const blueprint = css.slice(
+    css.indexOf('@keyframes ms-blueprint-out'),
+    css.indexOf('/* Hinge:'),
+  );
+  assert.ok((blueprint.match(/clip-path:/g) ?? []).length >= 7);
+  assert.match(blueprint, /99% 0/);
+  assert.match(css, /mask-image: none !important/);
+});

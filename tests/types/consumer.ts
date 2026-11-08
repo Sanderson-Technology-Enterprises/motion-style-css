@@ -20,6 +20,7 @@ const options: MotionOptions = {
 const result: Promise<MotionResult> = animate(html, options);
 void result;
 void enter(svg);
+void enter(html, { preset: 'blueprint' });
 void exit(html);
 void cancel(svg);
 void stagger(document.querySelectorAll<HTMLElement>('.tile'));

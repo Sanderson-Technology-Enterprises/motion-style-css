@@ -1,5 +1,5 @@
 /**
- * @typedef {'form'|'slide'|'swirl'|'slam'|'origami'|'portal'|'curtain'|'elastic'|'cascade'|'flip'} Preset
+ * @typedef {'form'|'slide'|'swirl'|'slam'|'origami'|'portal'|'curtain'|'elastic'|'cascade'|'flip'|'scanline'|'blueprint'|'hinge'|'gravity'|'pixelate'|'glitch'|'transmission'} Preset
  */
 /**
  * @typedef {object} MotionResult
@@ -9,7 +9,7 @@
  * @typedef {object} MotionOptions
  * @property {Preset} [preset='form'] - Paired animation family.
  * @property {'in'|'out'} [phase='in'] - Animation phase.
- * @property {'left'|'right'|'up'|'down'} [direction='left'] - Slide or curtain direction.
+ * @property {'left'|'right'|'up'|'down'} [direction='left'] - Directional preset orientation.
  * @property {number} [duration=600] - Duration in milliseconds, from 0 through 60000.
  * @property {number} [delay=0] - Delay in milliseconds, from 0 through 60000.
  * @property {string} [easing='cubic-bezier(.2,.8,.2,1)'] - CSS timing function.
@@ -57,6 +57,13 @@ export const presets = Object.freeze([
   'elastic',
   'cascade',
   'flip',
+  'scanline',
+  'blueprint',
+  'hinge',
+  'gravity',
+  'pixelate',
+  'glitch',
+  'transmission',
 ]);
 const directions = new Set(['left', 'right', 'up', 'down']);
 const active = new WeakMap();
@@ -157,7 +164,8 @@ function reduced(element) {
  */
 function animationName(config) {
   if (config.preset === 'slam' && config.phase === 'out') return 'ms-boom-out';
-  return `ms-${config.preset}-${config.phase}${config.preset === 'curtain' ? `-${config.direction}` : ''}`;
+  const directional = config.preset === 'curtain' || config.preset === 'scanline';
+  return `ms-${config.preset}-${config.phase}${directional ? `-${config.direction}` : ''}`;
 }
 
 /**
