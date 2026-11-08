@@ -1,5 +1,7 @@
 name: Deploy demo to GitHub Pages
 
+# lockfile-synchronized deployment trigger
+
 on:
   push:
     branches:
