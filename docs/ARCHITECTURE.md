@@ -2,10 +2,10 @@
 
 ## Boundaries
 
-- `src/motion.css`: paired keyframes, motion selectors, reduced-motion overrides, and opt-in decorative sparks. The `ms-` class/keyframe prefix and `--ms-` properties keep this optional layer separate from STE component styling.
+- `src/motion.css`: paired keyframes, motion selectors, reduced-motion overrides, opt-in decorative sparks, and deterministic mask/clip effects for technical and signal families. The `ms-` class/keyframe prefix and `--ms-` properties keep this optional layer separate from STE component styling.
 - `src/index.js`: validation, element ownership, lifecycle events, restoration, cancellation, staggering, and replacement. No runtime dependencies or top-level browser access.
 - `src/index.d.ts`: the ESM TypeScript contract for HTML/SVG shells.
-- `playground/`: independent browser demo and a Node HTTP server with an explicit public-asset allowlist. Both HTML entry points run the same controller. No bundler is required.
+- `playground/`: independent browser demo, editable starter recipes, and a Node HTTP server with an explicit public-asset allowlist. Both HTML entry points run the same controller. No bundler is required.
 - `scripts/`: granular jsdoc2md generation, version/CSS checks, and clean tarball consumer proof.
 - `tests/`: focused Node controller/server/CSS tests, real-browser checks, and a TypeScript consumer fixture.
 
@@ -21,7 +21,7 @@ Each phase snapshots inline motion custom properties including priorities, the m
 
 1. Extend `presets`, the `Preset` declaration, and its JSDoc type.
 2. Add paired `.ms-motion[data-ms-preset][data-ms-phase]` rules and `ms-` keyframes.
-3. Add the playground label and README table entry.
+3. Add the playground label, README table entry, and at least one starter recipe when the new family benefits from a tuned baseline.
 4. Update the keyframe-name resolver for any nonstandard name.
 5. Write a focused regression before implementation. Exercise entry/exit, repeat, cancellation, directions where supported, reduced motion, and ownership cleanup.
 6. Regenerate references and pass the release metadata, lint, declaration, and packed-consumer checks before publication.
