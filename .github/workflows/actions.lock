@@ -11,11 +11,8 @@ workflows:
         - 'actions/checkout@v4.4.0'
         - 'actions/configure-pages@v5.0.0'
         - 'actions/deploy-pages@v4.0.5'
-        - 'actions/setup-node@v4.4.0'
         - 'actions/upload-pages-artifact@v4.0.0'
-    '.github/workflows/release.yml':
-        - 'actions/checkout@v4.4.0'
-        - 'actions/setup-node@v4.4.0'
+    '.github/workflows/release.yml': []
 dependencies:
     'actions/checkout@v4.4.0':
         ref: 'v4.4.0'
