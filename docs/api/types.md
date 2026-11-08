@@ -19,7 +19,7 @@
 
 <a name="Preset"></a>
 
-## Preset : <code>&#x27;form&#x27;</code> \| <code>&#x27;slide&#x27;</code> \| <code>&#x27;swirl&#x27;</code> \| <code>&#x27;slam&#x27;</code> \| <code>&#x27;origami&#x27;</code> \| <code>&#x27;portal&#x27;</code> \| <code>&#x27;curtain&#x27;</code> \| <code>&#x27;elastic&#x27;</code> \| <code>&#x27;cascade&#x27;</code> \| <code>&#x27;flip&#x27;</code>
+## Preset : <code>&#x27;form&#x27;</code> \| <code>&#x27;slide&#x27;</code> \| <code>&#x27;swirl&#x27;</code> \| <code>&#x27;slam&#x27;</code> \| <code>&#x27;origami&#x27;</code> \| <code>&#x27;portal&#x27;</code> \| <code>&#x27;curtain&#x27;</code> \| <code>&#x27;elastic&#x27;</code> \| <code>&#x27;cascade&#x27;</code> \| <code>&#x27;flip&#x27;</code> \| <code>&#x27;scanline&#x27;</code> \| <code>&#x27;blueprint&#x27;</code> \| <code>&#x27;hinge&#x27;</code> \| <code>&#x27;gravity&#x27;</code> \| <code>&#x27;pixelate&#x27;</code> \| <code>&#x27;glitch&#x27;</code> \| <code>&#x27;transmission&#x27;</code>
 **Kind**: global typedef<br>
 <a name="MotionResult"></a>
 
