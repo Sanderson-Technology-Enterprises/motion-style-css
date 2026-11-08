@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/generate-actions-lock.yml"
+      - '.github/workflows/generate-actions-lock.yml'
   workflow_dispatch:
 
 permissions:
