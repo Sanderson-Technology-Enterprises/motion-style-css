@@ -1,92 +1,51 @@
-name: Deploy demo to GitHub Pages
+name: Migrate demo to GitHub Actions Pages
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'index.html'
-      - 'playground/**'
-      - 'src/**'
       - '.github/workflows/pages.yml'
-      - '.github/workflows/actions.lock'
-  release:
-    types:
-      - published
-  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
 
 jobs:
-  rebuild:
+  migrate:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Rebuild current main on legacy Pages
+      - name: Switch Pages build type to workflow
         run: |
-          expected_commit="$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)"
-          echo "Expected Pages source commit: ${expected_commit}"
-
-          status="$(curl -sS -o /tmp/build.json -w '%{http_code}' \
-            -X POST \
+          status="$(curl -sS -o /tmp/pages-update.json -w '%{http_code}' \
+            -X PUT \
             -H "Authorization: Bearer ${GH_TOKEN}" \
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds")"
-          cat /tmp/build.json
+            -H "Content-Type: application/json" \
+            -d '{"build_type":"workflow"}' \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages")"
+          cat /tmp/pages-update.json || true
           echo
-          if [ "${status}" != "201" ]; then
-            echo "Pages rebuild request failed with HTTP ${status}"
+          if [ "${status}" != "204" ] && [ "${status}" != "200" ]; then
+            echo "Pages migration failed with HTTP ${status}"
             exit 1
           fi
-
-          for attempt in $(seq 1 48); do
-            curl -fsSL \
-              -H "Authorization: Bearer ${GH_TOKEN}" \
-              -H "Accept: application/vnd.github+json" \
-              -H "X-GitHub-Api-Version: 2022-11-28" \
-              "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/builds/latest" \
-              > /tmp/latest-build.json
-
-            build_commit="$(python3 -c "import json; print(json.load(open('/tmp/latest-build.json')).get('commit',''))")"
-            build_status="$(python3 -c "import json; print(json.load(open('/tmp/latest-build.json')).get('status','unknown'))")"
-            echo "Pages build commit=${build_commit} status=${build_status}"
-
-            if [ "${build_commit}" != "${expected_commit}" ]; then
-              sleep 5
-              continue
-            fi
-            if [ "${build_status}" = "built" ]; then
-              break
-            fi
-            if [ "${build_status}" = "errored" ]; then
-              cat /tmp/latest-build.json
-              exit 1
-            fi
-            sleep 5
-          done
-
-          build_commit="$(python3 -c "import json; print(json.load(open('/tmp/latest-build.json')).get('commit',''))")"
-          build_status="$(python3 -c "import json; print(json.load(open('/tmp/latest-build.json')).get('status','unknown'))")"
-          if [ "${build_commit}" != "${expected_commit}" ] || [ "${build_status}" != "built" ]; then
-            echo "Pages never completed the requested main commit."
-            cat /tmp/latest-build.json
-            exit 1
-          fi
-
-      - name: Verify deployed Motion Studio
+      - name: Verify Pages uses workflow builds
         run: |
-          for attempt in $(seq 1 36); do
-            page="$(curl -fsSL "https://sanderson-technology-enterprises.github.io/motion-style-css/?verify=${GITHUB_SHA}-${attempt}")"
-            if printf '%s' "${page}" | grep -q 'v1.1.0' &&
-              printf '%s' "${page}" | grep -q 'Seventeen expressive transition presets'; then
-              echo "Public Motion Studio is serving v1.1.0."
-              exit 0
-            fi
-            sleep 5
-          done
-          echo "Public Motion Studio did not expose v1.1.0 within the verification window."
-          exit 1
+          curl -fsSL \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages" \
+            > /tmp/pages.json
+          cat /tmp/pages.json
+          python3 - <<'PY'
+          import json
+          with open('/tmp/pages.json') as handle:
+              pages = json.load(handle)
+          if pages.get('build_type') != 'workflow':
+              raise SystemExit('Pages build_type is not workflow')
+          PY
