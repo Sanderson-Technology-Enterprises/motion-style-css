@@ -55,3 +55,5 @@ jobs:
           echo "-----END LIVE PAGE-----"
 
 # regenerate after SHA pinning and shell-only release workflow
+
+# regenerate after legacy Pages workflow conversion
