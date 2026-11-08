@@ -1,59 +1,26 @@
-name: Format and verify final Pages deployment
+name: Verify Actions dependency lockfile
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/generate-actions-lock.yml'
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  verify:
+  lock:
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Clone current main
+      - name: Clone repository without external actions
         run: |
-          git clone "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" repo
+          git clone "https://github.com/${GITHUB_REPOSITORY}.git" repo
           cd repo
           git checkout main
-
-      - name: Install dependencies
+      - name: Install official actions-lock extension
+        run: gh extension install github/gh-actions-lock
+      - name: Verify generated lockfile has no drift
         run: |
           cd repo
-          npm ci --ignore-scripts
-
-      - name: Format local Pages action
-        run: |
-          cd repo
-          npx prettier --write .github/actions/pages-deploy/index.cjs
-
-      - name: Verify Actions lockfile
-        run: |
-          cd repo
-          gh extension install github/gh-actions-lock
           gh actions-lock
           git diff --exit-code -- .github/workflows
-
-      - name: Run repository release gate
-        run: |
-          cd repo
-          npm run check
-
-      - name: Commit formatted local action if needed
-        run: |
-          cd repo
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .github/actions/pages-deploy/index.cjs
-          if git diff --cached --quiet; then
-            echo "Local Pages action already formatted."
-            exit 0
-          fi
-          git commit -m "style: format local Pages deployment action"
-          git pull --rebase origin main
-          git push origin HEAD:main
