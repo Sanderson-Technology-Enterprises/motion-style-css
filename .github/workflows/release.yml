@@ -1,6 +1,11 @@
 name: Publish release package
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - ".github/workflows/release.yml"
   release:
     types: [published]
   workflow_dispatch:
@@ -33,7 +38,7 @@ jobs:
 
   publish-npm:
     needs: validate
-    if: github.event_name == 'release' || inputs.publish_npm
+    if: github.event_name == 'push' || github.event_name == 'release' || inputs.publish_npm
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
