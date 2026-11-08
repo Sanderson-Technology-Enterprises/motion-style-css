@@ -1,6 +1,6 @@
 {
   "name": "@sanderson-technology-enterprises/motion-style-css",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Framework-agnostic entrance, exit, and choreography effects for design systems.",
   "type": "module",
   "sideEffects": [
