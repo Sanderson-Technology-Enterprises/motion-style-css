@@ -29,9 +29,12 @@ jobs:
           cd repo
           gh actions-lock
           test -f .github/workflows/actions.lock
-      - name: Print generated lockfile
+      - name: Print generated lockfile and workflow diff
         run: |
           cd repo
           echo "-----BEGIN ACTIONS LOCKFILE-----"
           cat .github/workflows/actions.lock
           echo "-----END ACTIONS LOCKFILE-----"
+          echo "-----BEGIN ACTIONS WORKFLOW DIFF-----"
+          git diff -- .github/workflows
+          echo "-----END ACTIONS WORKFLOW DIFF-----"
