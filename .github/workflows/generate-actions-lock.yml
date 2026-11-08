@@ -1,15 +1,10 @@
-name: Generate Actions dependency lockfile
+name: Verify Actions dependency lockfile
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/generate-actions-lock.yml'
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   lock:
@@ -24,85 +19,8 @@ jobs:
           git checkout main
       - name: Install official actions-lock extension
         run: gh extension install github/gh-actions-lock
-      - name: Generate dependency lockfile
+      - name: Verify generated lockfile has no drift
         run: |
           cd repo
           gh actions-lock
-          test -f .github/workflows/actions.lock
-      - name: Print generated lockfile and workflow diff
-        run: |
-          cd repo
-          echo "-----BEGIN ACTIONS LOCKFILE-----"
-          cat .github/workflows/actions.lock
-          echo "-----END ACTIONS LOCKFILE-----"
-          echo "-----BEGIN ACTIONS WORKFLOW DIFF-----"
-          git diff -- .github/workflows
-          echo "-----END ACTIONS WORKFLOW DIFF-----"
-      - name: Diagnose GitHub Pages configuration
-        run: |
-          echo "-----BEGIN PAGES API-----"
-          status="$(curl -sS -o /tmp/pages.json -w '%{http_code}' \
-            -H "Authorization: Bearer ${GH_TOKEN}" \
-            -H "Accept: application/vnd.github+json" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/${GITHUB_REPOSITORY}/pages")"
-          echo "HTTP ${status}"
-          cat /tmp/pages.json
-          echo
-          echo "-----END PAGES API-----"
-          echo "-----BEGIN LIVE PAGE-----"
-          curl -fsSL "https://sanderson-technology-enterprises.github.io/motion-style-css/" | head -n 20
-          echo "-----END LIVE PAGE-----"
-      - name: Finalize Motion Style CSS v1.1.0 release
-        run: |
-          cat > /tmp/release-notes.md <<'NOTES'
-          Motion Style CSS 1.1.0 expands the STE motion layer from 10 to 17 paired entrance/exit families and upgrades the Motion Studio into a recipe-driven animation workbench.
-
-          ### New transition families
-          - Scanline / Scanline Clear
-          - Blueprint Draw / Blueprint Erase
-          - Hinge / Drop Hinge
-          - Gravity / Zero-G
-          - Pixelate / Depixelate
-          - Glitch Assemble / Signal Lost
-          - Transmission / Transmission Cut
-
-          Blueprint Erase removes the surface in irregular rubbing streaks that begin at the top-left, work downward, and progressively move to the right.
-
-          ### Motion Studio recipes
-          - Blueprint Draft
-          - Terminal Scan
-          - Drop Hinge
-          - Heavy / Zero-G
-          - Pixel Boot
-          - Glitch / Signal Lost
-          - Transmission Feed
-          - Terminal Failure
-
-          Recipes load real public preset/custom-property values into the studio controls so users can preview, tune, and copy a useful baseline rather than starting from zero.
-
-          ### Validation
-          - Static/package release gate passed.
-          - Server and CSS suites passed.
-          - Chromium, Firefox, and WebKit motion/browser scenarios passed.
-          - Clean consumer JavaScript, CSS export, and TypeScript declaration checks passed.
-          - npm publication uses GitHub OIDC trusted publishing with signed provenance.
-          - GitHub Pages is rebuilt through the repository's existing legacy main/root Pages configuration.
-
-          npm install: `npm install @sanderson-technology-enterprises/motion-style-css`
-          NOTES
-
-          gh api --method PATCH "repos/${GITHUB_REPOSITORY}/releases/438500526" \
-            -f name='Motion Style CSS v1.1.0' \
-            -F draft=false \
-            -F prerelease=false \
-            -f make_latest=true \
-            -f body="$(cat /tmp/release-notes.md)"
-
-          cd repo
-          tarball="$(npm pack --ignore-scripts --pack-destination /tmp | tail -n 1)"
-          gh release upload v1.1.0 "/tmp/${tarball}" --clobber
-
-# regenerate after SHA pinning and shell-only release workflow
-
-# regenerate after legacy Pages workflow conversion
+          git diff --exit-code -- .github/workflows
