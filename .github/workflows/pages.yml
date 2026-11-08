@@ -5,11 +5,11 @@ on:
     branches:
       - main
     paths:
-      - "index.html"
-      - "playground/**"
-      - "src/**"
-      - ".github/workflows/pages.yml"
-      - ".github/workflows/actions.lock"
+      - 'index.html'
+      - 'playground/**'
+      - 'src/**'
+      - '.github/workflows/pages.yml'
+      - '.github/workflows/actions.lock'
   release:
     types:
       - published
