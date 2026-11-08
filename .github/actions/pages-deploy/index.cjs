@@ -49,7 +49,9 @@ async function main() {
 
   for (const name of required) {
     if (!process.env[name]) {
-      throw new Error(`Required Actions runtime variable is unavailable: ${name}`);
+      throw new Error(
+        `Required Actions runtime variable is unavailable: ${name}`,
+      );
     }
   }
 
@@ -189,11 +191,7 @@ async function main() {
     );
     const html = await response.text();
 
-    if (
-      response.ok &&
-      html.includes('v1.1.0') &&
-      /seventeen/i.test(html)
-    ) {
+    if (response.ok && html.includes('v1.1.0') && /seventeen/i.test(html)) {
       console.log('Public Motion Studio is serving v1.1.0.');
       return;
     }
