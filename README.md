@@ -24,25 +24,25 @@ Import the stylesheet once at the application boundary. Browser consumers need n
 
 ## Presets
 
-| Preset    | Entrance                    | Exit                             |
-| --------- | --------------------------- | -------------------------------- |
-| `form`    | Fade and focus              | Dissolve into blur               |
-| `slide`   | Directional slide and focus | Retreat toward the selected side |
-| `swirl`   | Spiral into focus           | Unwind outward                   |
-| `slam`    | Rise and land               | Compress and burst outward       |
-| `origami` | Fold open in 3D             | Fold shut                        |
-| `portal`  | Grow from a point           | Collapse into a point            |
-| `curtain` | Directional clipping reveal | Directional conceal              |
-| `elastic` | Spring into place           | Compress and implode             |
-| `cascade` | Soft rising reveal          | Scatter away                     |
-| `flip`    | Deal a 3D card              | Flip and discard                 |
-| `scanline` | Directional display scan    | Scanline clear                   |
-| `blueprint` | Draft into view            | Erase in top-left rubbing streaks |
-| `hinge` | Swing from an attachment point | Lose the hinge and drop away |
-| `gravity` | Accelerating weighted impact | Zero-G upward drift |
-| `pixelate` | Resolve from coarse blocks | Break into coarse blocks |
-| `glitch` | Deterministic glitch assembly | Signal-lost fragmentation |
-| `transmission` | Reconstruct from signal bands | Break the feed into bands |
+| Preset         | Entrance                       | Exit                              |
+| -------------- | ------------------------------ | --------------------------------- |
+| `form`         | Fade and focus                 | Dissolve into blur                |
+| `slide`        | Directional slide and focus    | Retreat toward the selected side  |
+| `swirl`        | Spiral into focus              | Unwind outward                    |
+| `slam`         | Rise and land                  | Compress and burst outward        |
+| `origami`      | Fold open in 3D                | Fold shut                         |
+| `portal`       | Grow from a point              | Collapse into a point             |
+| `curtain`      | Directional clipping reveal    | Directional conceal               |
+| `elastic`      | Spring into place              | Compress and implode              |
+| `cascade`      | Soft rising reveal             | Scatter away                      |
+| `flip`         | Deal a 3D card                 | Flip and discard                  |
+| `scanline`     | Directional display scan       | Scanline clear                    |
+| `blueprint`    | Draft into view                | Erase in top-left rubbing streaks |
+| `hinge`        | Swing from an attachment point | Lose the hinge and drop away      |
+| `gravity`      | Accelerating weighted impact   | Zero-G upward drift               |
+| `pixelate`     | Resolve from coarse blocks     | Break into coarse blocks          |
+| `glitch`       | Deterministic glitch assembly  | Signal-lost fragmentation         |
+| `transmission` | Reconstruct from signal bands  | Break the feed into bands         |
 
 `slide`, `curtain`, and `scanline` accept `left`, `right`, `up`, and `down`. Other families accept the direction option without directional variation. Blur, clipping, and 3D effects can be expensive; there is no frame-rate guarantee.
 

@@ -347,7 +347,9 @@ for (const recipe of recipes) {
   $('#recipes').append(button);
 }
 
-for (const control of document.querySelectorAll('.controls select, .controls input'))
+for (const control of document.querySelectorAll(
+  '.controls select, .controls input',
+))
   control.addEventListener('change', () => {
     clearRecipeSelection();
     update();

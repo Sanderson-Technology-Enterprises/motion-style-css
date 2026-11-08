@@ -18,7 +18,6 @@ test('decorative pseudo-element ownership is explicitly opt-in, including reduce
     assert.match(selector, /\[data-ms-burst=(?:"true"|true)\]/);
 });
 
-
 test('expanded preset families and blueprint erasure remain in the stylesheet contract', async () => {
   const css = await readFile('src/motion.css', 'utf8');
   for (const name of [

@@ -164,7 +164,8 @@ function reduced(element) {
  */
 function animationName(config) {
   if (config.preset === 'slam' && config.phase === 'out') return 'ms-boom-out';
-  const directional = config.preset === 'curtain' || config.preset === 'scanline';
+  const directional =
+    config.preset === 'curtain' || config.preset === 'scanline';
   return `ms-${config.preset}-${config.phase}${directional ? `-${config.direction}` : ''}`;
 }
 
