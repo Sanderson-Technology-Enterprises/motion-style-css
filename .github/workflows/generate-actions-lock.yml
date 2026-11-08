@@ -42,3 +42,5 @@ jobs:
           fi
           git commit -m "ci: generate Actions dependency lockfile"
           git push origin HEAD:main
+
+# workflow registration trigger
