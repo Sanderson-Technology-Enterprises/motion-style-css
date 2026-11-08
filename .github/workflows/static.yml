@@ -61,7 +61,8 @@ jobs:
           cat > upload.cjs <<'NODE'
           const fs = require('node:fs');
           const path = require('node:path');
-          const artifact = require('@actions/artifact');
+          const { DefaultArtifactClient } = require('@actions/artifact');
+          const artifact = new DefaultArtifactClient();
 
           (async () => {
             const tarPath = path.join(process.env.RUNNER_TEMP, 'artifact.tar');
