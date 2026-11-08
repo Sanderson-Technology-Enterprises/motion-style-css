@@ -5,16 +5,16 @@ on:
     branches:
       - main
     paths:
-      - "package.json"
-      - ".github/workflows/release.yml"
-      - ".github/workflows/actions.lock"
+      - 'package.json'
+      - '.github/workflows/release.yml'
+      - '.github/workflows/actions.lock'
   release:
     types:
       - published
   workflow_dispatch:
     inputs:
       publish_npm:
-        description: "Publish the package version from package.json to npm"
+        description: 'Publish the package version from package.json to npm'
         required: true
         default: true
         type: boolean
