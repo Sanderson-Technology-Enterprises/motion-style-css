@@ -65,7 +65,7 @@ async function checkPackage() {
   const modulePath = resolve(consumer, 'probe.mjs');
   await writeFile(
     modulePath,
-    `import assert from 'node:assert/strict';\nimport {presets, enter, exit, cancel, stagger, replace, animate} from '@sanderson-technology-enterprises/motion-style-css';\nassert.equal(presets.length,10);\nfor(const api of [enter,exit,cancel,stagger,replace,animate]) assert.equal(typeof api,'function');\nassert.ok(import.meta.resolve('@sanderson-technology-enterprises/motion-style-css/styles.css').endsWith('/src/motion.css'));\nconsole.log('Clean consumer import and CSS export passed');\n`,
+    `import assert from 'node:assert/strict';\nimport {presets, enter, exit, cancel, stagger, replace, animate} from '@sanderson-technology-enterprises/motion-style-css';\nassert.equal(presets.length,17);\nfor(const api of [enter,exit,cancel,stagger,replace,animate]) assert.equal(typeof api,'function');\nassert.ok(import.meta.resolve('@sanderson-technology-enterprises/motion-style-css/styles.css').endsWith('/src/motion.css'));\nconsole.log('Clean consumer import and CSS export passed');\n`,
   );
   console.log(
     execFileSync(process.execPath, [modulePath], {

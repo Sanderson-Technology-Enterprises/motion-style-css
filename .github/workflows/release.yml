@@ -1,0 +1,73 @@
+name: Publish release package
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - ".github/workflows/release.yml"
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      publish_npm:
+        description: "Publish the package version from package.json to npm"
+        type: boolean
+        required: true
+        default: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm run test:server
+      - run: npm run test:css
+      - run: npx playwright install --with-deps chromium firefox webkit
+      - run: npm run test:browser
+
+  publish-npm:
+    needs: validate
+    if: github.event_name == 'push' || github.event_name == 'release' || inputs.publish_npm
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Use npm with trusted-publishing support
+        run: npm install --global npm@11.15.0
+      - name: Configure token fallback when available
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -n "$NPM_TOKEN" ]; then
+            npm config set //registry.npmjs.org/:_authToken "$NPM_TOKEN"
+          fi
+      - name: Verify version is not already published
+        id: version
+        run: |
+          VERSION="$(node -p "require('./package.json').version")"
+          NAME="$(node -p "require('./package.json').name")"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          if npm view "$NAME@$VERSION" version --json >/dev/null 2>&1; then
+            echo "$NAME@$VERSION is already published; refusing to republish."
+            exit 1
+          fi
+      - name: Publish npm package
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --access public --provenance --tag latest
