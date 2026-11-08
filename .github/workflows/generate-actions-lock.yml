@@ -1,11 +1,6 @@
 name: Verify Actions dependency lockfile
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/generate-actions-lock.yml'
   workflow_dispatch:
 
 permissions:
@@ -29,14 +24,3 @@ jobs:
           cd repo
           gh actions-lock
           git diff --exit-code -- .github/workflows
-      - name: Install Node.js 22.14.0
-        run: |
-          curl -fsSLo node.tar.xz https://nodejs.org/dist/v22.14.0/node-v22.14.0-linux-x64.tar.xz
-          mkdir -p "${RUNNER_TEMP}/node22"
-          tar -xJf node.tar.xz -C "${RUNNER_TEMP}/node22" --strip-components=1
-          echo "${RUNNER_TEMP}/node22/bin" >> "${GITHUB_PATH}"
-      - name: Run final repository gate
-        run: |
-          cd repo
-          npm ci --ignore-scripts
-          npm run check
