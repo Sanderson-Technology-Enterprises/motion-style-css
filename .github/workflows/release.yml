@@ -1,13 +1,6 @@
 name: Publish release package
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'package.json'
-      - '.github/workflows/release.yml'
-      - '.github/workflows/actions.lock'
   release:
     types:
       - published
@@ -69,16 +62,13 @@ jobs:
       - name: Install npm trusted-publishing client
         run: npm install --global npm@11.15.0
 
-      - name: Refuse to republish an immutable version
+      - name: Publish to npm with OIDC provenance
         working-directory: repo
         run: |
           VERSION="$(node -p "require('./package.json').version")"
           NAME="$(node -p "require('./package.json').name")"
           if npm view "$NAME@$VERSION" version --json >/dev/null 2>&1; then
-            echo "$NAME@$VERSION is already published; refusing to republish."
-            exit 1
+            echo "$NAME@$VERSION is already published; nothing to do."
+            exit 0
           fi
-
-      - name: Publish to npm with OIDC provenance
-        working-directory: repo
-        run: npm publish --access public --provenance --tag latest
+          npm publish --access public --provenance --tag latest
