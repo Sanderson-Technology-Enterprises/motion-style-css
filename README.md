@@ -105,7 +105,7 @@ Custom properties include `--ms-duration`, `--ms-delay`, `--ms-ease`, `--ms-offs
 
 ## Studio recipes
 
-The playground includes clickable starter recipes for Blueprint Draft, Terminal Scan, Drop Hinge, Heavy / Zero-G, Pixel Boot, Signal Lock, Transmission Feed, and Terminal Failure. Recipes load the same public presets and CSS custom properties shown in the control room, immediately preview the sequence, and leave every loaded value editable. The copy panel reflects the tuned configuration rather than a hidden demo-only implementation.
+The playground includes clickable starter recipes for Blueprint Draft, Terminal Scan, Drop Hinge, Heavy / Zero-G, Pixel Boot, Glitch / Signal Lost, Transmission Feed, and Terminal Failure. Recipes load the same public presets and CSS custom properties shown in the control room, immediately preview the sequence, and leave every loaded value editable. The copy panel reflects the tuned configuration rather than a hidden demo-only implementation.
 
 ## Accessibility and STE integration
 
