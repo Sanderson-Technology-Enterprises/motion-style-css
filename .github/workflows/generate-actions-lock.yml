@@ -32,3 +32,5 @@ jobs:
           cd repo
           npm ci --ignore-scripts
           npm run check
+
+# post-lint rerun
