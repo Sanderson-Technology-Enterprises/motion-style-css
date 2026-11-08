@@ -9,6 +9,7 @@ on:
       - "playground/**"
       - "src/**"
       - ".github/workflows/pages.yml"
+      - ".github/workflows/actions.lock"
   release:
     types:
       - published
