@@ -1,6 +1,6 @@
 # Motion Style CSS
 
-An optional, dependency-free motion layer for the STE interface system. Ten paired entrance and exit presets work with plain HTML, SVG shells, and JavaScript applications. The ESM controller adds cancellation, staggered choreography, replacement sequencing, and reduced-motion handling.
+An optional, dependency-free motion layer for the STE interface system. Seventeen paired entrance and exit presets work with plain HTML, SVG shells, and JavaScript applications. The ESM controller adds cancellation, staggered choreography, replacement sequencing, and reduced-motion handling.
 
 ## Install
 
@@ -36,8 +36,15 @@ Import the stylesheet once at the application boundary. Browser consumers need n
 | `elastic` | Spring into place           | Compress and implode             |
 | `cascade` | Soft rising reveal          | Scatter away                     |
 | `flip`    | Deal a 3D card              | Flip and discard                 |
+| `scanline` | Directional display scan    | Scanline clear                   |
+| `blueprint` | Draft into view            | Erase in top-left rubbing streaks |
+| `hinge` | Swing from an attachment point | Lose the hinge and drop away |
+| `gravity` | Accelerating weighted impact | Zero-G upward drift |
+| `pixelate` | Resolve from coarse blocks | Break into coarse blocks |
+| `glitch` | Deterministic glitch assembly | Signal-lost fragmentation |
+| `transmission` | Reconstruct from signal bands | Break the feed into bands |
 
-`slide` and `curtain` accept `left`, `right`, `up`, and `down`. Other families accept the direction option without directional variation. Blur, clipping, and 3D effects can be expensive; there is no frame-rate guarantee.
+`slide`, `curtain`, and `scanline` accept `left`, `right`, `up`, and `down`. Other families accept the direction option without directional variation. Blur, clipping, and 3D effects can be expensive; there is no frame-rate guarantee.
 
 ## Controller
 
@@ -94,7 +101,11 @@ Load the package stylesheet, then add a class and state attributes:
 </article>
 ```
 
-Custom properties include `--ms-duration`, `--ms-delay`, `--ms-ease`, `--ms-offset`, `--ms-blur`, `--ms-rotate`, and `--ms-origin`. Presets may override the transform origin. CSS-only exits retain their last frame; they do not remove nodes or manage accessibility state. For the optional decorative `slam` exit sparks, add `data-ms-burst="true"` to a dedicated shell. That opt-in owns the shell's positioning and `::after`; ordinary motion leaves component pseudo-elements untouched.
+Custom properties include `--ms-duration`, `--ms-delay`, `--ms-ease`, `--ms-offset`, `--ms-blur`, `--ms-rotate`, `--ms-origin`, `--ms-gravity-distance`, `--ms-float-rotate`, `--ms-pixel-size`, `--ms-glitch-shift`, and `--ms-scanline-glow`. Presets may override the transform origin. CSS-only exits retain their last frame; they do not remove nodes or manage accessibility state. For the optional decorative `slam` exit sparks, add `data-ms-burst="true"` to a dedicated shell. That opt-in owns the shell's positioning and `::after`; ordinary motion leaves component pseudo-elements untouched.
+
+## Studio recipes
+
+The playground includes clickable starter recipes for Blueprint Draft, Terminal Scan, Drop Hinge, Heavy / Zero-G, Pixel Boot, Signal Lock, Transmission Feed, and Terminal Failure. Recipes load the same public presets and CSS custom properties shown in the control room, immediately preview the sequence, and leave every loaded value editable. The copy panel reflects the tuned configuration rather than a hidden demo-only implementation.
 
 ## Accessibility and STE integration
 
