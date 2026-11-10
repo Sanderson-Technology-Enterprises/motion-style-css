@@ -35,6 +35,7 @@ async function checkPackage() {
     'LICENSE',
     'CHANGELOG.md',
     'docs/INTEGRATION.md',
+    'docs/PLAYGROUND.md',
   ];
   const files = packed.files.map((file) => file.path);
   for (const file of required)
@@ -42,7 +43,7 @@ async function checkPackage() {
   for (const file of files)
     assert.match(
       file,
-      /^(src\/|docs\/api\/|docs\/INTEGRATION\.md$|README\.md$|LICENSE$|CHANGELOG\.md$|package\.json$)/,
+      /^(src\/|docs\/api\/|docs\/(?:INTEGRATION|PLAYGROUND)\.md$|README\.md$|LICENSE$|CHANGELOG\.md$|package\.json$)/,
       `Unexpected tarball file: ${file}`,
     );
   const consumer = resolve(base, `consumer-${Date.now()}`);

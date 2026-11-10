@@ -102,6 +102,181 @@ test('playground initializes, switches targets, and stays accessible at narrow w
   });
 });
 
+/** Keep playback actions and meaningful animation-stage content in one viewport. */
+test('keeps playback controls beside the visible preview on desktop', async () => {
+  await withPage(chromium, async (page) => {
+    await page.setViewportSize({ width: 1440, height: 800 });
+    const play = page.getByRole('button', { name: 'Play sequence' });
+    await play.evaluate((button) => button.scrollIntoView({ block: 'center' }));
+
+    assert.equal(
+      await page.locator('.preview-panel .actions').count(),
+      1,
+      'playback controls should be owned by the live preview panel',
+    );
+
+    const visibleLayout = await page.evaluate(() => {
+      const playRect = document.querySelector('#play').getBoundingClientRect();
+      const stageRect = document
+        .querySelector('#stage')
+        .getBoundingClientRect();
+      const previewStyle = getComputedStyle(
+        document.querySelector('.preview-panel'),
+      );
+      const visibleStageHeight =
+        Math.min(stageRect.bottom, innerHeight) - Math.max(stageRect.top, 0);
+
+      return {
+        playVisible: playRect.top >= 0 && playRect.bottom <= innerHeight,
+        previewOverflowY: previewStyle.overflowY,
+        visibleStageHeight,
+      };
+    });
+    assert.equal(visibleLayout.playVisible, true, 'play control visibility');
+    assert.equal(
+      visibleLayout.previewOverflowY,
+      'visible',
+      'the preview should not create a nested vertical scroll trap',
+    );
+    assert.ok(
+      visibleLayout.visibleStageHeight >= 240,
+      `expected at least 240px of the animation stage, got ${visibleLayout.visibleStageHeight}px`,
+    );
+
+    await play.click();
+    await page.waitForFunction(
+      () => document.querySelector('#status').textContent === 'EXITING',
+    );
+  });
+});
+
+/** Verify published Neo Noir artwork, square panel geometry, and Midnight Gold paint. */
+test('uses themed UI Style Kit icons for every playback control', async () => {
+  await withPage(chromium, async (page) => {
+    for (const pathname of ['/', '/playground/']) {
+      await page.goto(new URL(pathname, page.url()).href);
+      const icons = page.locator('.actions usk-icon');
+      assert.equal(
+        await icons.count(),
+        3,
+        `${pathname} should use one library icon per playback control`,
+      );
+      await page.waitForFunction(() =>
+        [...document.querySelectorAll('.actions usk-icon')].every(
+          (icon) =>
+            icon.shadowRoot?.querySelector('svg') && !icon.dataset.error,
+        ),
+      );
+
+      assert.deepEqual(
+        await page.evaluate(() => ({
+          iconNames: [...document.querySelectorAll('.actions usk-icon')].map(
+            (icon) => icon.getAttribute('name'),
+          ),
+          iconPacks: [...document.querySelectorAll('.actions usk-icon')].map(
+            (icon) => icon.shadowRoot.querySelector('svg').dataset.iconStyle,
+          ),
+          iconWidths: [...document.querySelectorAll('.actions usk-icon')].map(
+            (icon) => icon.getBoundingClientRect().width,
+          ),
+          mode: document.documentElement.dataset.mode,
+          paint: getComputedStyle(document.documentElement)
+            .getPropertyValue('--usi-primary-ink')
+            .trim(),
+          rawGlyphs: [...document.querySelectorAll('.actions button')].some(
+            (button) => /^[▶↘↖]/u.test(button.textContent.trim()),
+          ),
+          theme: document.documentElement.dataset.theme,
+          ui: document.documentElement.dataset.ui,
+        })),
+        {
+          iconNames: ['play', 'arrow-down', 'arrow-up'],
+          iconPacks: ['neo-noir', 'neo-noir', 'neo-noir'],
+          iconWidths: [24, 24, 24],
+          mode: 'dark',
+          paint: '#f3d27a',
+          rawGlyphs: false,
+          theme: 'midnight-gold',
+          ui: 'neo-noir',
+        },
+        `${pathname} icon theme contract`,
+      );
+      assert.equal(
+        await page
+          .locator('.preview-panel')
+          .evaluate((panel) => getComputedStyle(panel).borderTopLeftRadius),
+        '0px',
+        `${pathname} should inherit the Neo Noir panel geometry`,
+      );
+      assert.equal(
+        await page
+          .locator('input[name="target"]')
+          .first()
+          .evaluate((radio) => getComputedStyle(radio).opacity),
+        '1',
+        `${pathname} should show the native target selection indicator`,
+      );
+      assert.equal(
+        await page
+          .locator('#play .noir-button')
+          .evaluate(
+            (face) => getComputedStyle(face, '::before').backgroundColor,
+          ),
+        'rgb(214, 168, 79)',
+        `${pathname} should preserve the gold transport face`,
+      );
+    }
+  });
+});
+
+/** Keep supporting icons legible without replacing native select semantics. */
+test('uses legible themed icons in navigation, selects, and preview chrome', async () => {
+  await withPage(chromium, async (page) => {
+    for (const pathname of ['/', '/playground/']) {
+      await page.goto(new URL(pathname, page.url()).href);
+      await page.waitForFunction(() =>
+        [...document.querySelectorAll('usk-icon')].every(
+          (icon) =>
+            icon.shadowRoot?.querySelector('svg') && !icon.dataset.error,
+        ),
+      );
+      const icons = await page
+        .locator(
+          '.topbar usk-icon, .select-field usk-icon, .mock-top usk-icon, #copy usk-icon, footer usk-icon',
+        )
+        .evaluateAll((elements) =>
+          elements.map((icon) => ({
+            width: icon.getBoundingClientRect().width,
+            height: icon.getBoundingClientRect().height,
+            pack: icon.shadowRoot.querySelector('svg').dataset.iconStyle,
+          })),
+        );
+      assert.ok(
+        icons.every((icon) => icon.width >= 24 && icon.height >= 24),
+        `${pathname} supporting icons should render at least 24px square`,
+      );
+      assert.equal(
+        icons.length,
+        8,
+        `${pathname} should theme all four select arrows`,
+      );
+      assert.ok(icons.every((icon) => icon.pack === 'neo-noir'));
+      assert.deepEqual(
+        await page
+          .locator('.select-field select')
+          .evaluateAll((selects) =>
+            selects.map((select) => getComputedStyle(select).appearance),
+          ),
+        ['none', 'none', 'none', 'none'],
+        'library chevrons should replace the browser-owned arrow',
+      );
+      await page.locator('#direction').focus();
+      await page.keyboard.press('End');
+      assert.equal(await page.locator('#direction').inputValue(), 'down');
+    }
+  });
+});
+
 for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   test(`${name} runs every preset and direction with real animation events`, async () => {
     await withPage(engine, async (page) => {
