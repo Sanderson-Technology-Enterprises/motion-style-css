@@ -25,6 +25,9 @@
  * controls use the icon package's theme-aware custom element and public `size`
  * attribute instead of text glyphs. Interactive Surface owns the outer button,
  * while a separate inner span preserves Neo Noir's decorative button face.
+ * Navigation, playback, preview chrome, clipboard, footer, and select chevrons
+ * all use 24px icons. Selects retain native keyboard and form behavior; their
+ * decorative library chevrons ignore pointer events so clicks reach the select.
  *
  * @module PlaygroundDemo
  */

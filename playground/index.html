@@ -75,7 +75,7 @@
           >GitHub
           <usk-icon
             name="external-link"
-            size="18px"
+            size="24px"
             aria-hidden="true"
           ></usk-icon> </span
       ></a>
@@ -110,17 +110,37 @@
             <span>01 / CONTROL ROOM</span
             ><span class="signal noir-badge">● LIVE</span>
           </div>
-          <label for="preset-in">Entrance effect</label
-          ><select id="preset-in" class="noir-select"></select>
-          <label for="preset-out">Exit effect</label
-          ><select id="preset-out" class="noir-select"></select>
-          <label for="direction">Direction</label
-          ><select id="direction" class="noir-select">
-            <option value="left">From left</option>
-            <option value="right">From right</option>
-            <option value="up">From top</option>
-            <option value="down">From bottom</option>
-          </select>
+          <label for="preset-in">Entrance effect</label>
+          <div class="select-field">
+            <select id="preset-in" class="noir-select"></select
+            ><usk-icon
+              name="chevron-down"
+              size="24px"
+              aria-hidden="true"
+            ></usk-icon>
+          </div>
+          <label for="preset-out">Exit effect</label>
+          <div class="select-field">
+            <select id="preset-out" class="noir-select"></select
+            ><usk-icon
+              name="chevron-down"
+              size="24px"
+              aria-hidden="true"
+            ></usk-icon>
+          </div>
+          <label for="direction">Direction</label>
+          <div class="select-field">
+            <select id="direction" class="noir-select">
+              <option value="left">From left</option>
+              <option value="right">From right</option>
+              <option value="up">From top</option>
+              <option value="down">From bottom</option></select
+            ><usk-icon
+              name="chevron-down"
+              size="24px"
+              aria-hidden="true"
+            ></usk-icon>
+          </div>
           <label for="duration"
             >Duration <output id="duration-label">750ms</output></label
           ><input
@@ -175,18 +195,24 @@
             step="5"
             value="225"
           />
-          <label for="origin">Transform origin</label
-          ><select id="origin" class="noir-select">
-            <option value="center">Center</option>
-            <option value="top left">Top left</option>
-            <option value="top center">Top</option>
-            <option value="top right">Top right</option>
-            <option value="center left">Left</option>
-            <option value="center right">Right</option>
-            <option value="bottom left">Bottom left</option>
-            <option value="bottom center">Bottom</option>
-            <option value="bottom right">Bottom right</option>
-          </select>
+          <label for="origin">Transform origin</label>
+          <div class="select-field">
+            <select id="origin" class="noir-select">
+              <option value="center">Center</option>
+              <option value="top left">Top left</option>
+              <option value="top center">Top</option>
+              <option value="top right">Top right</option>
+              <option value="center left">Left</option>
+              <option value="center right">Right</option>
+              <option value="bottom left">Bottom left</option>
+              <option value="bottom center">Bottom</option>
+              <option value="bottom right">Bottom right</option></select
+            ><usk-icon
+              name="chevron-down"
+              size="24px"
+              aria-hidden="true"
+            ></usk-icon>
+          </div>
           <fieldset>
             <legend>Target</legend>
             <label class="radio"
@@ -254,7 +280,7 @@
                 ><span>COMPONENT.EXAMPLE</span
                 ><usk-icon
                   name="external-link"
-                  size="12px"
+                  size="24px"
                   aria-hidden="true"
                 ></usk-icon>
               </div>
@@ -307,7 +333,7 @@
               data-surface-level="1"
             >
               <span class="transport-face noir-button noir-button-outline">
-                <usk-icon name="copy" size="18px" aria-hidden="true"></usk-icon>
+                <usk-icon name="copy" size="24px" aria-hidden="true"></usk-icon>
                 <span id="copy-label">Copy snippet</span>
               </span>
             </button>
@@ -332,7 +358,7 @@
       </section>
       <footer data-ui-structure="neutral">
         BUILT FOR EXPERIMENTATION
-        <usk-icon name="sparkles" size="18px" aria-hidden="true"></usk-icon>
+        <usk-icon name="sparkles" size="24px" aria-hidden="true"></usk-icon>
         SHIP RESPONSIBLY
       </footer>
     </main>

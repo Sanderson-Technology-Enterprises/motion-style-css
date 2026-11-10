@@ -229,6 +229,54 @@ test('uses themed UI Style Kit icons for every playback control', async () => {
   });
 });
 
+/** Keep supporting icons legible without replacing native select semantics. */
+test('uses legible themed icons in navigation, selects, and preview chrome', async () => {
+  await withPage(chromium, async (page) => {
+    for (const pathname of ['/', '/playground/']) {
+      await page.goto(new URL(pathname, page.url()).href);
+      await page.waitForFunction(() =>
+        [...document.querySelectorAll('usk-icon')].every(
+          (icon) =>
+            icon.shadowRoot?.querySelector('svg') && !icon.dataset.error,
+        ),
+      );
+      const icons = await page
+        .locator(
+          '.topbar usk-icon, .select-field usk-icon, .mock-top usk-icon, #copy usk-icon, footer usk-icon',
+        )
+        .evaluateAll((elements) =>
+          elements.map((icon) => ({
+            width: icon.getBoundingClientRect().width,
+            height: icon.getBoundingClientRect().height,
+            pack: icon.shadowRoot.querySelector('svg').dataset.iconStyle,
+          })),
+        );
+      assert.ok(
+        icons.every((icon) => icon.width >= 24 && icon.height >= 24),
+        `${pathname} supporting icons should render at least 24px square`,
+      );
+      assert.equal(
+        icons.length,
+        8,
+        `${pathname} should theme all four select arrows`,
+      );
+      assert.ok(icons.every((icon) => icon.pack === 'neo-noir'));
+      assert.deepEqual(
+        await page
+          .locator('.select-field select')
+          .evaluateAll((selects) =>
+            selects.map((select) => getComputedStyle(select).appearance),
+          ),
+        ['none', 'none', 'none', 'none'],
+        'library chevrons should replace the browser-owned arrow',
+      );
+      await page.locator('#direction').focus();
+      await page.keyboard.press('End');
+      assert.equal(await page.locator('#direction').inputValue(), 'down');
+    }
+  });
+});
+
 for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   test(`${name} runs every preset and direction with real animation events`, async () => {
     await withPage(engine, async (page) => {

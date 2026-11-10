@@ -154,6 +154,21 @@ h1 em {
   min-height: 44px;
   font-size: 13px;
 }
+/** A decorative library chevron replaces only the native select's arrow paint. */
+.select-field {
+  position: relative;
+}
+.select-field select {
+  appearance: none;
+  padding-inline-end: 44px;
+}
+.select-field usk-icon {
+  position: absolute;
+  inset-inline-end: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
 .controls output {
   color: var(--demo-gold-light);
   font: 12px var(--noir-font-mono);
