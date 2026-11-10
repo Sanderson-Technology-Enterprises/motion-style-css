@@ -52,6 +52,14 @@ a {
 a:hover {
   text-decoration: underline;
 }
+.topbar > a,
+.actions button,
+.snippet-header button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
 .topbar {
   height: 68px;
   border-bottom: 1px solid var(--demo-border);
@@ -190,7 +198,7 @@ h1 em {
   background: var(--demo-surface-strong);
 }
 .controls select:focus-visible,
-.controls button:focus-visible,
+.actions button:focus-visible,
 input:focus-visible {
   outline: 2px solid var(--demo-gold-light);
   outline-offset: 2px;
@@ -251,6 +259,13 @@ input:focus-visible {
 .actions button:hover:not(:disabled) {
   filter: brightness(1.1);
 }
+.preview-panel .actions {
+  grid-template-columns: 2fr 1fr 1fr;
+  margin-bottom: 12px;
+}
+.preview-panel .actions .primary {
+  grid-column: auto;
+}
 .hint {
   color: var(--demo-muted);
   font-size: 11px;
@@ -260,6 +275,7 @@ input:focus-visible {
 .preview-panel {
   padding: 20px;
   min-width: 0;
+  align-self: start;
 }
 .preview-panel .panel-heading {
   margin: 0 0 18px;
@@ -306,6 +322,7 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 6px;
   padding: 13px 16px;
   color: var(--demo-muted);
   border-bottom: 1px solid var(--demo-border);
@@ -314,9 +331,20 @@ input:focus-visible {
   letter-spacing: 0.06em;
 }
 .dots {
+  flex: 0 0 auto;
   color: var(--demo-gold);
   font-size: 10px;
   letter-spacing: 3px;
+  white-space: nowrap;
+}
+.mock-top > span:nth-child(2) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mock-top usk-icon {
+  flex: 0 0 auto;
 }
 .mock-body {
   padding: 23px;
@@ -548,6 +576,9 @@ footer span {
   }
   .stage-foot span:last-child {
     display: none;
+  }
+  .stage-foot {
+    bottom: 10px;
   }
   .topbar {
     padding-inline: 16px;

@@ -102,6 +102,109 @@ test('playground initializes, switches targets, and stays accessible at narrow w
   });
 });
 
+/** Keep playback actions and meaningful animation-stage content in one viewport. */
+test('keeps playback controls beside the visible preview on desktop', async () => {
+  await withPage(chromium, async (page) => {
+    await page.setViewportSize({ width: 1440, height: 800 });
+    const play = page.getByRole('button', { name: 'Play sequence' });
+    await play.evaluate((button) => button.scrollIntoView({ block: 'center' }));
+
+    assert.equal(
+      await page.locator('.preview-panel .actions').count(),
+      1,
+      'playback controls should be owned by the live preview panel',
+    );
+
+    const visibleLayout = await page.evaluate(() => {
+      const playRect = document.querySelector('#play').getBoundingClientRect();
+      const stageRect = document
+        .querySelector('#stage')
+        .getBoundingClientRect();
+      const previewStyle = getComputedStyle(
+        document.querySelector('.preview-panel'),
+      );
+      const visibleStageHeight =
+        Math.min(stageRect.bottom, innerHeight) - Math.max(stageRect.top, 0);
+
+      return {
+        playVisible: playRect.top >= 0 && playRect.bottom <= innerHeight,
+        previewOverflowY: previewStyle.overflowY,
+        visibleStageHeight,
+      };
+    });
+    assert.equal(visibleLayout.playVisible, true, 'play control visibility');
+    assert.equal(
+      visibleLayout.previewOverflowY,
+      'visible',
+      'the preview should not create a nested vertical scroll trap',
+    );
+    assert.ok(
+      visibleLayout.visibleStageHeight >= 240,
+      `expected at least 240px of the animation stage, got ${visibleLayout.visibleStageHeight}px`,
+    );
+
+    await play.click();
+    await page.waitForFunction(
+      () => document.querySelector('#status').textContent === 'EXITING',
+    );
+  });
+});
+
+/** Use the shared Bento icon family and Midnight Gold paint on both demo entries. */
+test('uses themed UI Style Kit icons for every playback control', async () => {
+  await withPage(chromium, async (page) => {
+    for (const pathname of ['/', '/playground/']) {
+      await page.goto(new URL(pathname, page.url()).href);
+      const icons = page.locator('.actions usk-icon');
+      assert.equal(
+        await icons.count(),
+        3,
+        `${pathname} should use one library icon per playback control`,
+      );
+      await page.waitForFunction(() =>
+        [...document.querySelectorAll('.actions usk-icon')].every(
+          (icon) =>
+            icon.shadowRoot?.querySelector('svg') && !icon.dataset.error,
+        ),
+      );
+
+      assert.deepEqual(
+        await page.evaluate(() => ({
+          iconNames: [...document.querySelectorAll('.actions usk-icon')].map(
+            (icon) => icon.getAttribute('name'),
+          ),
+          iconPacks: [...document.querySelectorAll('.actions usk-icon')].map(
+            (icon) => icon.shadowRoot.querySelector('svg').dataset.iconStyle,
+          ),
+          iconWidths: [...document.querySelectorAll('.actions usk-icon')].map(
+            (icon) => icon.getBoundingClientRect().width,
+          ),
+          mode: document.documentElement.dataset.mode,
+          paint: getComputedStyle(document.documentElement)
+            .getPropertyValue('--usi-primary-ink')
+            .trim(),
+          rawGlyphs: [...document.querySelectorAll('.actions button')].some(
+            (button) => /^[▶↘↖]/u.test(button.textContent.trim()),
+          ),
+          theme: document.documentElement.dataset.theme,
+          ui: document.documentElement.dataset.ui,
+        })),
+        {
+          iconNames: ['play', 'arrow-down', 'arrow-up'],
+          iconPacks: ['bento', 'bento', 'bento'],
+          iconWidths: [24, 24, 24],
+          mode: 'dark',
+          paint: '#f3d27a',
+          rawGlyphs: false,
+          theme: 'midnight-gold',
+          ui: 'bento',
+        },
+        `${pathname} icon theme contract`,
+      );
+    }
+  });
+});
+
 for (const [name, engine] of Object.entries({ chromium, firefox, webkit })) {
   test(`${name} runs every preset and direction with real animation events`, async () => {
     await withPage(engine, async (page) => {

@@ -83,7 +83,7 @@ The controller restores the prior inline `--ms-duration`, `--ms-delay`, and `--m
 
 Running phases dispatch non-bubbling `ms:start` events with `{ preset, phase }` and `ms:finish` events with `{ status, preset, phase }` in `event.detail`. Skipped phases dispatch neither event. Zero duration and the default reduced-motion policy skip JavaScript animation. `respectReducedMotion: false` disables that JavaScript skip only; the stylesheet always honors the accessibility preference.
 
-See the [generated API references](docs/api/README.md) and [option types](docs/api/types.md).
+See the [generated API references](docs/api/README.md), [option types](docs/api/types.md), and [playground usage guide](docs/PLAYGROUND.md).
 
 ## CSS-only use
 
@@ -105,7 +105,7 @@ Custom properties include `--ms-duration`, `--ms-delay`, `--ms-ease`, `--ms-offs
 
 ## Studio recipes
 
-The playground includes clickable starter recipes for Blueprint Draft, Terminal Scan, Drop Hinge, Heavy / Zero-G, Pixel Boot, Glitch / Signal Lost, Transmission Feed, and Terminal Failure. Recipes load the same public presets and CSS custom properties shown in the control room, immediately preview the sequence, and leave every loaded value editable. The copy panel reflects the tuned configuration rather than a hidden demo-only implementation.
+The playground includes clickable starter recipes for Blueprint Draft, Terminal Scan, Drop Hinge, Heavy / Zero-G, Pixel Boot, Glitch / Signal Lost, Transmission Feed, and Terminal Failure. Recipes load the same public presets and CSS custom properties shown in the control room, immediately preview the sequence, and leave every loaded value editable. The copy panel reflects the tuned configuration rather than a hidden demo-only implementation. Both demo entry points use the published UI Style Kit Icons 2.0.0 custom element with contextual Bento artwork and Midnight Gold dark paint; the package remains dependency-free because this demo integration is loaded independently.
 
 ## Accessibility and STE integration
 

@@ -1,5 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html
+  lang="en"
+  class="usk-icons-theme"
+  data-ui="bento"
+  data-theme="midnight-gold"
+  data-mode="dark"
+  data-icon-pack="bento"
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -15,6 +22,10 @@
       href="./assets/motion-style-css-icon.png"
     />
     <title>Motion Style CSS — Studio</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/ui-style-kit-icons@2.0.0/dist/ui-style-kit-icons.css"
+    />
     <link rel="stylesheet" href="../src/motion.css" />
     <link rel="stylesheet" href="./studio.css" />
   </head>
@@ -36,8 +47,13 @@
         href="https://github.com/Sanderson-Technology-Enterprises/motion-style-css"
         target="_blank"
         rel="noreferrer"
-        >GitHub ↗</a
-      >
+        >GitHub
+        <usk-icon
+          name="external-link"
+          size="18px"
+          aria-hidden="true"
+        ></usk-icon>
+      </a>
     </header>
     <main class="shell">
       <section class="intro">
@@ -152,27 +168,42 @@
               aria-label="Starter motion recipes"
             ></div>
           </div>
-          <div class="actions">
-            <button id="play" class="primary">▶ Play sequence</button
-            ><button id="in">↘ Load in</button
-            ><button id="out">↖ Load out</button>
-          </div>
-          <p class="hint">
-            Reduced-motion preference is respected automatically. Click Play to
-            see the exit and entrance together.
-          </p>
         </aside>
         <section class="preview-panel">
           <div class="panel-heading">
             <span>03 / LIVE PREVIEW</span
             ><span id="status" aria-live="polite">READY</span>
           </div>
+          <div class="actions" aria-label="Preview playback">
+            <button id="play" class="primary">
+              <usk-icon name="play" size="24px" aria-hidden="true"></usk-icon>
+              Play sequence</button
+            ><button id="in">
+              <usk-icon
+                name="arrow-down"
+                size="24px"
+                aria-hidden="true"
+              ></usk-icon>
+              Load in</button
+            ><button id="out">
+              <usk-icon
+                name="arrow-up"
+                size="24px"
+                aria-hidden="true"
+              ></usk-icon>
+              Load out
+            </button>
+          </div>
           <div class="stage" id="stage">
             <div class="stage-grid"></div>
             <div class="mock-page" id="mock-page">
               <div class="mock-top">
                 <span class="dots">● ● ●</span><span>COMPONENT.EXAMPLE</span
-                ><span>↗</span>
+                ><usk-icon
+                  name="external-link"
+                  size="12px"
+                  aria-hidden="true"
+                ></usk-icon>
               </div>
               <div class="mock-body" id="mock-body">
                 <div class="preview-card" id="preview-card">
@@ -211,9 +242,16 @@
               ><span>60 FPS IS THE GOAL, NOT A GUARANTEE</span>
             </div>
           </div>
+          <p class="hint">
+            Reduced-motion preference is respected automatically. Click Play to
+            see the exit and entrance together.
+          </p>
           <div class="snippet-header">
             <span>04 / COPY CONFIGURATION</span
-            ><button id="copy">Copy snippet</button>
+            ><button id="copy">
+              <usk-icon name="copy" size="18px" aria-hidden="true"></usk-icon>
+              <span id="copy-label">Copy snippet</span>
+            </button>
           </div>
           <pre
             tabindex="0"
@@ -222,8 +260,16 @@
           ><code id="snippet"></code></pre>
         </section>
       </section>
-      <footer>BUILT FOR EXPERIMENTATION <span>✳</span> SHIP RESPONSIBLY</footer>
+      <footer>
+        BUILT FOR EXPERIMENTATION
+        <usk-icon name="sparkles" size="18px" aria-hidden="true"></usk-icon>
+        SHIP RESPONSIBLY
+      </footer>
     </main>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/ui-style-kit-icons@2.0.0/dist/ui-style-kit-icons.js"
+    ></script>
     <script type="module" src="./app.js"></script>
   </body>
 </html>

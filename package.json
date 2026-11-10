@@ -20,7 +20,8 @@
     "LICENSE",
     "CHANGELOG.md",
     "docs/api",
-    "docs/INTEGRATION.md"
+    "docs/INTEGRATION.md",
+    "docs/PLAYGROUND.md"
   ],
   "scripts": {
     "demo": "node playground/serve.js",
