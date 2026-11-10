@@ -1,11 +1,13 @@
 <!doctype html>
 <html
   lang="en"
-  class="usk-icons-theme"
-  data-ui="bento"
+  class="ly-root usk-icons-theme"
+  data-ui="neo-noir"
   data-theme="midnight-gold"
   data-mode="dark"
-  data-icon-pack="bento"
+  data-icon-pack="neo-noir"
+  data-ly-layout="data-terminal"
+  data-ly-density="normal"
 >
   <head>
     <meta charset="utf-8" />
@@ -24,13 +26,33 @@
     <title>Motion Style CSS — Studio</title>
     <link
       rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/ui-style-kit-css@2.7.1/dist/visual/neo-noir.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/ui-style-kit-css@2.7.1/styles/component-composition.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/ui-style-kit-css@2.7.1/styles/interactive-surface-theme.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/interactive-surface-css@1.7.3/state-core.css"
+    />
+    <link
+      rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/ui-style-kit-icons@2.0.0/dist/ui-style-kit-icons.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/layout-style-css@3.2.3/dist/layout-style-css.min.css"
     />
     <link rel="stylesheet" href="../src/motion.css" />
     <link rel="stylesheet" href="./studio.css" />
   </head>
-  <body>
-    <header class="topbar">
+  <body class="noir-sheet">
+    <header class="topbar" data-ui-structure="neutral">
       <div class="brand">
         <img
           class="brand-icon"
@@ -41,22 +63,25 @@
         />
         <span class="brand-wordmark"
           >MOTION<span class="brand-light">STYLE CSS</span></span
-        ><span class="version">v1.1.0</span>
+        ><span class="version noir-badge">v1.1.0</span>
       </div>
       <a
+        class="interactive-surface transport"
+        data-surface-level="1"
         href="https://github.com/Sanderson-Technology-Enterprises/motion-style-css"
         target="_blank"
         rel="noreferrer"
-        >GitHub
-        <usk-icon
-          name="external-link"
-          size="18px"
-          aria-hidden="true"
-        ></usk-icon>
-      </a>
+        ><span class="transport-face noir-button noir-button-outline"
+          >GitHub
+          <usk-icon
+            name="external-link"
+            size="18px"
+            aria-hidden="true"
+          ></usk-icon> </span
+      ></a>
     </header>
-    <main class="shell">
-      <section class="intro">
+    <main class="shell ly-wrapper ly-wrapper--wide" data-ui-structure="neutral">
+      <section class="intro" data-ui-structure="neutral">
         <div class="intro-copy">
           <div class="eyebrow">DESIGN SYSTEM / MOTION LAB</div>
           <h1>Every entrance<br /><em>deserves an exit.</em></h1>
@@ -74,17 +99,23 @@
           decoding="async"
         />
       </section>
-      <section class="workspace" aria-label="Motion studio">
-        <aside class="controls">
+      <section
+        class="workspace"
+        aria-label="Motion studio"
+        data-ly-recipe="docs"
+        data-ui-structure="neutral"
+      >
+        <aside class="controls noir-panel" data-ly-area="nav">
           <div class="panel-heading">
-            <span>01 / CONTROL ROOM</span><span class="signal">● LIVE</span>
+            <span>01 / CONTROL ROOM</span
+            ><span class="signal noir-badge">● LIVE</span>
           </div>
           <label for="preset-in">Entrance effect</label
-          ><select id="preset-in"></select>
+          ><select id="preset-in" class="noir-select"></select>
           <label for="preset-out">Exit effect</label
-          ><select id="preset-out"></select>
+          ><select id="preset-out" class="noir-select"></select>
           <label for="direction">Direction</label
-          ><select id="direction">
+          ><select id="direction" class="noir-select">
             <option value="left">From left</option>
             <option value="right">From right</option>
             <option value="up">From top</option>
@@ -94,6 +125,7 @@
             >Duration <output id="duration-label">750ms</output></label
           ><input
             id="duration"
+            class="noir-range"
             type="range"
             min="150"
             max="1800"
@@ -104,6 +136,7 @@
             >Stagger <output id="stagger-label">90ms</output></label
           ><input
             id="stagger"
+            class="noir-range"
             type="range"
             min="0"
             max="250"
@@ -114,6 +147,7 @@
             >Distance <output id="offset-label">58px</output></label
           ><input
             id="offset"
+            class="noir-range"
             type="range"
             min="16"
             max="140"
@@ -121,11 +155,20 @@
             value="58"
           />
           <label for="blur">Blur <output id="blur-label">12px</output></label
-          ><input id="blur" type="range" min="0" max="24" step="1" value="12" />
+          ><input
+            id="blur"
+            class="noir-range"
+            type="range"
+            min="0"
+            max="24"
+            step="1"
+            value="12"
+          />
           <label for="rotate"
             >Rotation <output id="rotate-label">225°</output></label
           ><input
             id="rotate"
+            class="noir-range"
             type="range"
             min="0"
             max="360"
@@ -133,7 +176,7 @@
             value="225"
           />
           <label for="origin">Transform origin</label
-          ><select id="origin">
+          ><select id="origin" class="noir-select">
             <option value="center">Center</option>
             <option value="top left">Top left</option>
             <option value="top center">Top</option>
@@ -157,48 +200,58 @@
               page</label
             >
           </fieldset>
-          <div class="recipe-lab">
-            <div class="recipe-heading">02 / STARTER RECIPES</div>
-            <p>
-              Load a tuned baseline, preview it, then adjust the same controls.
-            </p>
-            <div
-              id="recipes"
-              class="recipe-grid"
-              aria-label="Starter motion recipes"
-            ></div>
-          </div>
         </aside>
-        <section class="preview-panel">
+        <section class="preview-panel noir-panel" data-ly-area="main">
           <div class="panel-heading">
-            <span>03 / LIVE PREVIEW</span
+            <span>02 / LIVE PREVIEW</span
             ><span id="status" aria-live="polite">READY</span>
           </div>
           <div class="actions" aria-label="Preview playback">
-            <button id="play" class="primary">
-              <usk-icon name="play" size="24px" aria-hidden="true"></usk-icon>
-              Play sequence</button
-            ><button id="in">
-              <usk-icon
-                name="arrow-down"
-                size="24px"
-                aria-hidden="true"
-              ></usk-icon>
-              Load in</button
-            ><button id="out">
-              <usk-icon
-                name="arrow-up"
-                size="24px"
-                aria-hidden="true"
-              ></usk-icon>
-              Load out
+            <button
+              id="play"
+              class="primary interactive-surface transport"
+              data-surface-level="3"
+            >
+              <span class="transport-face noir-button noir-button-primary">
+                <usk-icon name="play" size="24px" aria-hidden="true"></usk-icon>
+                Play sequence
+              </span>
+            </button>
+            <button
+              id="in"
+              class="interactive-surface transport"
+              data-surface-level="2"
+            >
+              <span class="transport-face noir-button noir-button-outline">
+                <usk-icon
+                  name="arrow-down"
+                  size="24px"
+                  aria-hidden="true"
+                ></usk-icon>
+                Load in
+              </span>
+            </button>
+            <button
+              id="out"
+              class="interactive-surface transport"
+              data-surface-level="2"
+            >
+              <span class="transport-face noir-button noir-button-outline">
+                <usk-icon
+                  name="arrow-up"
+                  size="24px"
+                  aria-hidden="true"
+                ></usk-icon>
+                Load out
+              </span>
             </button>
           </div>
           <div class="stage" id="stage">
             <div class="stage-grid"></div>
             <div class="mock-page" id="mock-page">
               <div class="mock-top">
-                <span class="dots">● ● ●</span><span>COMPONENT.EXAMPLE</span
+                <span class="dots" aria-hidden="true">01</span
+                ><span>COMPONENT.EXAMPLE</span
                 ><usk-icon
                   name="external-link"
                   size="12px"
@@ -206,7 +259,7 @@
                 ></usk-icon>
               </div>
               <div class="mock-body" id="mock-body">
-                <div class="preview-card" id="preview-card">
+                <div class="preview-card noir-panel" id="preview-card">
                   <img
                     class="card-icon"
                     src="./assets/motion-style-css-icon.png"
@@ -222,15 +275,15 @@
                   </div>
                 </div>
                 <div class="preview-group" id="preview-group" hidden>
-                  <div class="tile">
+                  <div class="tile noir-panel">
                     <span>01</span><strong>Structure</strong
                     ><small>Measured timing</small>
                   </div>
-                  <div class="tile">
+                  <div class="tile noir-panel">
                     <span>02</span><strong>Movement</strong
                     ><small>Expressive motion</small>
                   </div>
-                  <div class="tile">
+                  <div class="tile noir-panel">
                     <span>03</span><strong>Detail</strong
                     ><small>Clean execution</small>
                   </div>
@@ -247,10 +300,16 @@
             see the exit and entrance together.
           </p>
           <div class="snippet-header">
-            <span>04 / COPY CONFIGURATION</span
-            ><button id="copy">
-              <usk-icon name="copy" size="18px" aria-hidden="true"></usk-icon>
-              <span id="copy-label">Copy snippet</span>
+            <span>03 / COPY CONFIGURATION</span
+            ><button
+              id="copy"
+              class="interactive-surface transport"
+              data-surface-level="1"
+            >
+              <span class="transport-face noir-button noir-button-outline">
+                <usk-icon name="copy" size="18px" aria-hidden="true"></usk-icon>
+                <span id="copy-label">Copy snippet</span>
+              </span>
             </button>
           </div>
           <pre
@@ -260,7 +319,18 @@
           ><code id="snippet"></code></pre>
         </section>
       </section>
-      <footer>
+      <section class="recipe-lab noir-panel" aria-labelledby="recipe-heading">
+        <div id="recipe-heading" class="recipe-heading">
+          04 / STARTER RECIPES
+        </div>
+        <p>Load a tuned baseline, preview it, then adjust the same controls.</p>
+        <div
+          id="recipes"
+          class="recipe-grid noir-segmented ly-grid"
+          aria-label="Starter motion recipes"
+        ></div>
+      </section>
+      <footer data-ui-structure="neutral">
         BUILT FOR EXPERIMENTATION
         <usk-icon name="sparkles" size="18px" aria-hidden="true"></usk-icon>
         SHIP RESPONSIBLY

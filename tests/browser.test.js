@@ -150,7 +150,7 @@ test('keeps playback controls beside the visible preview on desktop', async () =
   });
 });
 
-/** Use the shared Bento icon family and Midnight Gold paint on both demo entries. */
+/** Verify published Neo Noir artwork, square panel geometry, and Midnight Gold paint. */
 test('uses themed UI Style Kit icons for every playback control', async () => {
   await withPage(chromium, async (page) => {
     for (const pathname of ['/', '/playground/']) {
@@ -191,15 +191,39 @@ test('uses themed UI Style Kit icons for every playback control', async () => {
         })),
         {
           iconNames: ['play', 'arrow-down', 'arrow-up'],
-          iconPacks: ['bento', 'bento', 'bento'],
+          iconPacks: ['neo-noir', 'neo-noir', 'neo-noir'],
           iconWidths: [24, 24, 24],
           mode: 'dark',
           paint: '#f3d27a',
           rawGlyphs: false,
           theme: 'midnight-gold',
-          ui: 'bento',
+          ui: 'neo-noir',
         },
         `${pathname} icon theme contract`,
+      );
+      assert.equal(
+        await page
+          .locator('.preview-panel')
+          .evaluate((panel) => getComputedStyle(panel).borderTopLeftRadius),
+        '0px',
+        `${pathname} should inherit the Neo Noir panel geometry`,
+      );
+      assert.equal(
+        await page
+          .locator('input[name="target"]')
+          .first()
+          .evaluate((radio) => getComputedStyle(radio).opacity),
+        '1',
+        `${pathname} should show the native target selection indicator`,
+      );
+      assert.equal(
+        await page
+          .locator('#play .noir-button')
+          .evaluate(
+            (face) => getComputedStyle(face, '::before').backgroundColor,
+          ),
+        'rgb(214, 168, 79)',
+        `${pathname} should preserve the gold transport face`,
       );
     }
   });

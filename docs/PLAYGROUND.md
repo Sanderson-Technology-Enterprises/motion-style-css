@@ -25,9 +25,13 @@ The distance control also derives safe values for gravity travel, pixel block
 size, and glitch displacement. Blur, rotation, and transform origin are public
 CSS tuning values, so presets that do not consume a value safely ignore it.
 Reduced-motion behavior remains owned by the library and is honored
-automatically. Both HTML entry points scope `ui-style-kit-icons` to the Bento
-family and Midnight Gold dark paint; playback controls use the package's
-theme-aware custom element and public `size` attribute instead of text glyphs.
+automatically. Both HTML entry points scope `ui-style-kit-icons` to the Neo Noir
+family and Midnight Gold dark paint. The published Neo Noir visual preset
+supplies square panels, transport controls, native inputs, and film texture;
+layout-style-css supplies the responsive workspace and recipe grid. Playback
+controls use the icon package's theme-aware custom element and public `size`
+attribute instead of text glyphs. Interactive Surface owns the outer button,
+while a separate inner span preserves Neo Noir's decorative button face.
 
 - [PlaygroundDemo](#module_PlaygroundDemo)
   - [~locked](#module_PlaygroundDemo..locked)
@@ -42,6 +46,7 @@ theme-aware custom element and public `size` attribute instead of text glyphs.
   - [~applyTuning(config)](#module_PlaygroundDemo..applyTuning) ⇒ <code>void</code>
   - [~clearRecipeSelection()](#module_PlaygroundDemo..clearRecipeSelection) ⇒ <code>void</code>
   - [~update()](#module_PlaygroundDemo..update) ⇒ <code>void</code>
+    - [~percentage](#module_PlaygroundDemo..update..percentage)
   - [~perform(phase)](#module_PlaygroundDemo..perform) ⇒ <code>Promise.&lt;void&gt;</code>
   - [~resetPreview()](#module_PlaygroundDemo..resetPreview) ⇒ <code>void</code>
   - [~loadRecipe(recipe)](#module_PlaygroundDemo..loadRecipe) ⇒ <code>void</code>
@@ -194,8 +199,17 @@ Remove exact-recipe selection once the user starts tuning loaded values.
 Refresh visible output values, preview selection, tuning, and the copyable
 public-package example. Group targets produce `stagger` calls; component and
 page targets produce paired `enter` and `exit` calls.
+Range-track fills follow the native control values through Neo Noir's public
+`--noir-value` percentage hook; changing the visual preset does not alter motion.
 
 **Kind**: inner method of [<code>PlaygroundDemo</code>](#module_PlaygroundDemo)<br>
+<a name="module_PlaygroundDemo..update..percentage"></a>
+
+#### update~percentage
+
+Native range position expressed as a percentage from 0 to 100. @type {number}
+
+**Kind**: inner constant of [<code>update</code>](#module_PlaygroundDemo..update)<br>
 <a name="module_PlaygroundDemo..perform"></a>
 
 ### PlaygroundDemo~perform(phase) ⇒ <code>Promise.&lt;void&gt;</code>

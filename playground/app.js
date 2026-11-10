@@ -18,9 +18,13 @@
  * size, and glitch displacement. Blur, rotation, and transform origin are public
  * CSS tuning values, so presets that do not consume a value safely ignore it.
  * Reduced-motion behavior remains owned by the library and is honored
- * automatically. Both HTML entry points scope `ui-style-kit-icons` to the Bento
- * family and Midnight Gold dark paint; playback controls use the package's
- * theme-aware custom element and public `size` attribute instead of text glyphs.
+ * automatically. Both HTML entry points scope `ui-style-kit-icons` to the Neo Noir
+ * family and Midnight Gold dark paint. The published Neo Noir visual preset
+ * supplies square panels, transport controls, native inputs, and film texture;
+ * layout-style-css supplies the responsive workspace and recipe grid. Playback
+ * controls use the icon package's theme-aware custom element and public `size`
+ * attribute instead of text glyphs. Interactive Surface owns the outer button,
+ * while a separate inner span preserves Neo Noir's decorative button face.
  *
  * @module PlaygroundDemo
  */
@@ -382,11 +386,21 @@ function clearRecipeSelection() {
  * Refresh visible output values, preview selection, tuning, and the copyable
  * public-package example. Group targets produce `stagger` calls; component and
  * page targets produce paired `enter` and `exit` calls.
+ * Range-track fills follow the native control values through Neo Noir's public
+ * `--noir-value` percentage hook; changing the visual preset does not alter motion.
  * @returns {void}
  */
 function update() {
   const config = state();
   applyTuning(config);
+  for (const input of document.querySelectorAll('input[type="range"]')) {
+    /** Native range position expressed as a percentage from 0 to 100. @type {number} */
+    const percentage =
+      ((Number(input.value) - Number(input.min)) /
+        (Number(input.max) - Number(input.min))) *
+      100;
+    input.style.setProperty('--noir-value', `${percentage}%`);
+  }
   $('#duration-label').textContent = config.duration + 'ms';
   $('#stagger-label').textContent = config.interval + 'ms';
   $('#offset-label').textContent = config.offset + 'px';
@@ -542,7 +556,8 @@ async function activateRecipe(event) {
 function createRecipeButton(recipe) {
   const button = document.createElement('button');
   button.type = 'button';
-  button.className = 'recipe-button';
+  button.className = 'recipe-button interactive-surface';
+  button.dataset.surfaceLevel = '1';
   button.dataset.recipe = recipe.id;
   button.setAttribute('aria-pressed', 'false');
   button.innerHTML = `<strong>${recipe.name}</strong><span>${recipe.note}</span>`;

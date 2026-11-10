@@ -105,7 +105,7 @@ Custom properties include `--ms-duration`, `--ms-delay`, `--ms-ease`, `--ms-offs
 
 ## Studio recipes
 
-The playground includes clickable starter recipes for Blueprint Draft, Terminal Scan, Drop Hinge, Heavy / Zero-G, Pixel Boot, Glitch / Signal Lost, Transmission Feed, and Terminal Failure. Recipes load the same public presets and CSS custom properties shown in the control room, immediately preview the sequence, and leave every loaded value editable. The copy panel reflects the tuned configuration rather than a hidden demo-only implementation. Both demo entry points use the published UI Style Kit Icons 2.0.0 custom element with contextual Bento artwork and Midnight Gold dark paint; the package remains dependency-free because this demo integration is loaded independently.
+The playground includes clickable starter recipes for Blueprint Draft, Terminal Scan, Drop Hinge, Heavy / Zero-G, Pixel Boot, Glitch / Signal Lost, Transmission Feed, and Terminal Failure. Recipes load the same public presets and CSS custom properties shown in the control room, immediately preview the sequence, and leave every loaded value editable. The copy panel reflects the tuned configuration rather than a hidden demo-only implementation. Both demo entry points compose the published Neo Noir visual preset with Midnight Gold dark paint, matching UI Style Kit Icons 2.0.0 artwork, native controls, Interactive Surface feedback, and a responsive Layout Style CSS workspace. Playback stays beside the preview, and starter recipes appear in a compact grid below the workspace. The motion package remains dependency-free because these demo integrations load independently.
 
 ## Accessibility and STE integration
 
